@@ -17,7 +17,7 @@
                  "static/css/default_style.css",
                  "style.css"
                ],
-        "exp_id": "probabilistic_selection",
+        "exp_id": "soc_prob_learning",
         "cognitive_atlas_task_id": "trm_5667483dcc371",
         "contributors": [
                          "Jamie Li",
