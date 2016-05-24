@@ -39,7 +39,7 @@
         "deployment_variables":{"jspsych_init":
                                         {"fullscreen": true,
                                         "display_element": "getDisplayElement",
-                                        "on_trial_finish": "addID('probabilistic_selection')"}
+                                        "on_trial_finish": "addID('soc_prob_learning')"}
                        }  
    }
 ]

@@ -156,12 +156,12 @@ var eachComboNumSP = SP_trials / 30; /* don't change this line */
 
 
 /* THIS IS TO RANDOMIZE STIMS */
-var stimArray = ["/static/experiments/probabilistic_selection/images/1.png",
-	"/static/experiments/probabilistic_selection/images/2.png",
-	"/static/experiments/probabilistic_selection/images/3.png",
-	"/static/experiments/probabilistic_selection/images/4.png",
-	"/static/experiments/probabilistic_selection/images/5.png",
-	"/static/experiments/probabilistic_selection/images/6.png"
+var stimArray = ["/static/experiments/soc_prob_learning/images/1.png",
+	"/static/experiments/soc_prob_learning/images/2.png",
+	"/static/experiments/soc_prob_learning/images/3.png",
+	"/static/experiments/soc_prob_learning/images/4.png",
+	"/static/experiments/soc_prob_learning/images/5.png",
+	"/static/experiments/soc_prob_learning/images/6.png"
 ];
 jsPsych.pluginAPI.preloadImages(stimArray)
 var randomStimArray = jsPsych.randomization.repeat(stimArray, 1);
@@ -339,6 +339,7 @@ for (i = 0; i < 60; i++) {
 		stimulus: getStim,
 		key_answer: getResponse,
 		choices: choices,
+		prompt: '<div class = topbox><div class = center-text>Think fast</div></div>',
 		correct_text: '<div class = bottombox><div style="color:green"; class = center-text>Correct!</div></div>',
 		incorrect_text: '<div class = bottombox><div style="color:red"; class = center-text>Incorrect</div></div>',
 		timeout_message: '<div class = bottombox><div class = center-text>no response detected</div></div>',
@@ -436,7 +437,7 @@ var end_block = {
 	type: 'poldrack-text',
 	data: {
 		trial_id: "end",
-		exp_id: 'probabilistic_selection'
+		exp_id: 'soc_prob_learning'
 	},
 	timing_response: 180000,
 	text: '<div class = centerbox><p class = center-block-text>Finished with this task!</p><p class = center-block-text>Press <strong>enter</strong> to continue.</p></div>',
@@ -447,15 +448,15 @@ var end_block = {
 
 
 /* create experiment definition array */
-var probabilistic_selection_experiment = [];
-probabilistic_selection_experiment.push(instruction_node);
-probabilistic_selection_experiment.push(FP_block);
-probabilistic_selection_experiment.push(performance_criteria);
-probabilistic_selection_experiment.push(attention_node);
-probabilistic_selection_experiment.push(SP_block);
+var soc_prob_learning_experiment = [];
+soc_prob_learning_experiment.push(instruction_node);
+soc_prob_learning_experiment.push(FP_block);
+soc_prob_learning_experiment.push(performance_criteria);
+soc_prob_learning_experiment.push(attention_node);
+soc_prob_learning_experiment.push(SP_block);
 for(var i = 0; i<SP_trials; i++){
-	probabilistic_selection_experiment.push(second_phase_trials);
+	soc_prob_learning_experiment.push(second_phase_trials);
 }
-probabilistic_selection_experiment.push(attention_node);
-probabilistic_selection_experiment.push(post_task_block)
-probabilistic_selection_experiment.push(end_block);
+soc_prob_learning_experiment.push(attention_node);
+soc_prob_learning_experiment.push(post_task_block)
+soc_prob_learning_experiment.push(end_block);

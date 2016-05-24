@@ -1,3 +1,13 @@
+.topbox{
+  width:35vw;
+  height: 20vw;
+  position:absolute;
+  top:10%;
+  left:50%;
+  margin-right:-50%;
+  transform: translate(-50%,0%);
+}
+
 .bottombox {
   width:35vw;
   height: 20vw;
