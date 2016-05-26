@@ -96,17 +96,19 @@ var getTestFeedback = function() {
 			}
 		}
 	}
-	var average_rt = math.median(rt_array);
+	var average_rt = -1;
+    if (rt_array.length !== 0) {
+      average_rt = math.median(rt_array);
+      rtMedians.push(average_rt)
+    }
 	var rt_diff = 0
 	if (rtMedians.length !== 0) {
 		rt_diff = (average_rt - rtMedians.slice(-1)[0])
 	}
-	console.log(rt_diff)
 	var GoCorrect_percent = sum_correct / go_length;
 	var missed_responses = (go_length - num_responses) / go_length
 	var StopCorrect_percent = successful_stops / stop_length
 	stopAccMeans.push(StopCorrect_percent)
-	rtMedians.push(average_rt)
 	var stopAverage = math.mean(stopAccMeans)
 
 	test_feedback_text = "<br>In 20 seconds, this page will expire and the computer will automatically advance you to the next page.  Please take this time to read your feedback and to take a short break!"
@@ -206,6 +208,7 @@ var SSD = 250
 var stop_signal =
 	'<div class = stopbox><div class = centered-shape id = stop-signal></div><div class = centered-shape id = stop-signal-inner></div></div>'
 
+/* Instruction Prompt */
 var possible_responses = [
 	["M key", 77],
 	["Z key", 90]
@@ -224,6 +227,8 @@ var prompt_text = '<ul list-text><li><img class = prompt_stim src = ' + images[0
 	' </li><li><img class = prompt_stim src = ' + images[3] + '></img>' + tab + correct_responses[3][0] +
 	' </li></ul>'
 
+/* Global task variables */
+var current_trial = 0
 var rtMedians = []
 var stopAccMeans =[]	
 var RT_thresh = 1000
@@ -234,7 +239,13 @@ var stop_thresh = 0.2
 var practice_repetitions = 1
 var practice_repetition_thresh = 5
 var test_block_data = [] // records the data in the current block to calculate feedback
+var NoSSpractice_block_len = 12
+var practice_block_len = 20
+var test_block_len = 50
+var numconditions = 2
+var numblocks = 6
 
+/* Define stims */
 var stimulus = [{
 	stimulus: '<div class = shapebox><img class = stim src = ' + images[0] + '></img></div>',
 	data: {
@@ -261,8 +272,7 @@ var stimulus = [{
 	}
 }]
 
-var NoSSpractice_block_len = 12
-var practice_block_len = 20
+
 var practice_trial_data = '' //global variable to track randomized practice trial data
 var NoSS_practice_list = jsPsych.randomization.repeat(stimulus, NoSSpractice_block_len / 4, true)
 var practice_list = jsPsych.randomization.repeat(stimulus, practice_block_len / 4, true)
@@ -270,10 +280,7 @@ var practice_stop_trials = jsPsych.randomization.repeat(['stop', 'stop', 'stop',
 	'go', 'go', 'go', 'go'
 ], practice_list.data.length / 10)
 
-//number of blocks per condition
-var test_block_len = 5
-var numconditions = 2
-var numblocks = 6
+//setup blocks per condition
 var condition_blocks = []
 for (j = 0; j < numconditions; j++) {
 	blocks = []
@@ -313,7 +320,7 @@ var post_task_block = {
    columns: [60,60]
 };
 
-/* define static blocks */
+/* define static blocks  */
 var end_block = {
 	type: 'poldrack-text',
 	data: {
@@ -441,6 +448,7 @@ var reset_block = {
 	},
 	func: function() {
 		resetSSD()
+		current_trial = 0
 	},
 	timing_post_trial: 0
 }
@@ -471,8 +479,10 @@ for (i = 0; i < NoSSpractice_block_len; i++) {
 		prompt: prompt_text,
 		on_finish: function() {
 			jsPsych.data.addDataToLastTrial({
-				exp_stage: 'NoSS_practice'
+				exp_stage: 'NoSS_practice',
+				trial_num: current_trial
 			})
+			current_trial += 1
 		}
 	}
 	NoSS_practice_trials.push(stim_block)
@@ -498,13 +508,17 @@ var NoSS_practice_node = {
 				go_length += 1
 			}
 		}
-		var average_rt = math.median(rt_array);
+		var average_rt = -1
+		if (rt_array.length !== 0) {
+			average_rt = math.median(rt_array);
+		}
 		var GoCorrect_percent = sum_correct / go_length;
 		var missed_responses = (go_length - num_responses) / go_length
 		practice_feedback_text = "</p><p class = block-text><strong>Average reaction time:  " + Math.round(average_rt) + " ms. Accuracy for non-star trials: " + Math.round(GoCorrect_percent * 100)+ "%</strong>" 
 		if ((average_rt < RT_thresh && GoCorrect_percent > accuracy_thresh && missed_responses <
 				missed_response_thresh) || practice_repetitions > practice_repetition_thresh) {
 			// end the loop
+			current_trial = 0
 			practice_repetitions = 1
 			practice_feedback_text +=
 				'</p><p class = block-text>For the rest of the experiment, on some proportion of trials a black "stop signal" in the shape of a star will appear around the shape. When this happens please try your best to stop your response and press nothing on that trial.</p><p class = block-text>The star will appear around the same time or shortly after the shape appears. Because of this, you will not always be able to successfully stop when a star appears. However, if you continue to try very hard to stop when a star appears, you will be able to stop sometimes but not always.</p><p class = block-text><strong>Please balance the requirement to respond quickly and accurately to the shapes while trying very hard to stop to the stop signal.</strong></p><p class = block-text>Press <strong>Enter</strong> to continue'
@@ -554,8 +568,10 @@ for (i = 0; i < practice_block_len; i++) {
 		timing_post_trial: 0,
 		on_finish: function(data) {
 			jsPsych.data.addDataToLastTrial({
-				exp_stage: 'practice'
+				exp_stage: 'practice',
+				trial_num: current_trial
 			})
+			current_trial += 1
 		}
 	}
 	practice_trials.push(stop_signal_block)
@@ -593,7 +609,10 @@ var practice_node = {
 				}
 			}
 		}
-		var average_rt = math.median(rt_array);
+		var average_rt = -1
+		if (rt_array.length !== 0) {
+			average_rt = math.median(rt_array);
+		}
 		var GoCorrect_percent = sum_correct / go_length;
 		var missed_responses = (go_length - num_responses) / go_length
 		var StopCorrect_percent = successful_stops / stop_length
@@ -602,8 +621,7 @@ var practice_node = {
 				missed_response_thresh && StopCorrect_percent > 0.2 && StopCorrect_percent < 0.8) || practice_repetitions >
 			practice_repetition_thresh) {
 			// end the loop
-			practice_repetitions = 1
-				// end the loop
+		    current_trial = 0
 			practice_feedback_text +=
 				'</p><p class = block-text>Done with practice. We will now begin the ' + numconditions *
 				numblocks +
@@ -681,8 +699,10 @@ for (c = 0; c < numconditions; c++) {
 				on_finish: function(data) {
 					updateSSD(data)
 					jsPsych.data.addDataToLastTrial({
-						exp_stage: 'test'
+						exp_stage: 'test',
+						trial_num: current_trial
 					})
+					current_trial += 1
 					test_block_data.push(data)
 				}
 			}

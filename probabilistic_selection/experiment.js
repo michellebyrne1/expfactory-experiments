@@ -182,7 +182,8 @@ for (var i = 0; i<3; i++) {
 	order1_stim.data = {
 		trial_id: 'stim',
 		exp_stage: 'training',
-		condition: stims[i*2][0] + '_' + stims[i*2+1][0]
+		condition: stims[i*2][0] + '_' + stims[i*2+1][0],
+		optimal_response: 37
 	}
 	var order2_stim = {}
 	order2_stim.image = "<div class = decision-left><img src='" + stims[i*2+1][1] +
@@ -190,7 +191,8 @@ for (var i = 0; i<3; i++) {
 	order2_stim.data = {
 		trial_id: 'stim',
 		exp_stage: 'training',
-		condition: stims[i*2+1][0] + '_' + stims[i*2][0]
+		condition: stims[i*2+1][0] + '_' + stims[i*2][0],
+		optimal_response: 39
 	}
 	firstPhaseStims.push(order1_stim)
 	firstPhaseStims.push(order2_stim)
@@ -208,22 +210,22 @@ for (var i = 0; i<5; i++) {
 		var order1_stim = {}
 		order1_stim.image = "<div class = decision-left><img src='" + stims[i][1] +
 			"'></img></div><div class = decision-right><img src='" + stims[j][1] + "'></img></div>"
-		var correct_response1 = choices[stims[i][0] < stims[j][0] ? 1 : 0]
+		var optimal_response1 = choices[stims[i][0] < stims[j][0] ? 1 : 0]
 		order1_stim.data = {
 			trial_id: 'stim',
 			exp_stage: 'test',
 			condition: stims[i][0] + '_' + stims[j][0],
-			correct_response: correct_response1
+			optimal_response: optimal_response1
 		}
 		var order2_stim = {}
 		order2_stim.image = "<div class = decision-left><img src='" + stims[j][1] +
 			"'></img></div><div class = decision-right><img src='" + stims[i][1] + "'></img></div>"
-		var correct_response2 = choices[stims[i][0] > stims[j][0] ? 1 : 0]
+		var optimal_response2 = choices[stims[i][0] > stims[j][0] ? 1 : 0]
 		order2_stim.data = {
 			trial_id: 'stim',
 			exp_stage: 'test',
 			condition: stims[j][0] + '_' + stims[i][0],
-			correct_response: correct_response2
+			optimal_response: optimal_response2
 		}
 		secondPhaseStims.push(order1_stim)
 		secondPhaseStims.push(order2_stim)
@@ -348,7 +350,21 @@ for (i = 0; i < 60; i++) {
 		response_ends_trial: true,
 		timing_post_trial: 500,
 		is_html: true,
-		data: getData
+		data: getData,
+		on_finish: function(data) {
+			choice = choices.indexOf(data.key_press)
+			stims = data.condition.split('_')
+			chosen_stim = stims[choice]
+			correct = false
+			if (data.key_press == data.optimal_response){
+				correct = true
+			}
+			jsPsych.data.addDataToLastTrial({
+				'feedback': data.correct,
+				'correct': correct,
+				'stim_chosen': chosen_stim
+			})
+		}
 	};
 	training_trials.push(training_block)
 }
@@ -365,19 +381,19 @@ var performance_criteria = {
 		var cd_cum_trials = 0;
 		var ef_cum_trials = 0;
 		for (var i = 0; i < data.length; i++) {
-			if (data[i].condition == "80_20" || data[i].condition == "20_80") {
+			if (data[i].condition == "80_20" || data[i].condition == "20_80" ) {
 				ab_cum_trials = ab_cum_trials + 1;
-				if (data[i].correct === true) {
+				if (data[i].key_press === data[i].optimal_response) {
 					ab_total_correct = ab_total_correct + 1;
 				}
 			} else if (data[i].condition == "70_30" || data[i].condition == "30_70") {
 				cd_cum_trials = cd_cum_trials + 1;
-				if (data[i].correct === true) {
+				if (data[i].key_press === data[i].optimal_response) {
 					cd_total_correct = cd_total_correct + 1;
 				}
 			} else if (data[i].condition == "60_40" || data[i].condition == "40_60") {
 				ef_cum_trials = ef_cum_trials + 1;
-				if (data[i].correct === true) {
+				if (data[i].key_press === data[i].optimal_response) {
 					ef_total_correct = ef_total_correct + 1;
 				}
 			}
@@ -385,7 +401,6 @@ var performance_criteria = {
 		var ab_percent = ab_total_correct / ab_cum_trials
 		var cd_percent = cd_total_correct / cd_cum_trials
 		var ef_percent = ef_total_correct / ef_cum_trials
-
 		training_count = training_count + 1;
 
 		if ((ab_percent > 0.7 && cd_percent > 0.65 && ef_percent > 0.5 && training_count > 3) || (
@@ -423,11 +438,17 @@ var second_phase_trials = {
 	timing_response: 2500,
 	timing_post_trial: 500,
 	on_finish: function(data) {
+		choice = choices.indexOf(data.key_press)
+		stims = data.condition.split('_')
+		chosen_stim = stims[choice]
 		correct = false
-		if (data.key_press == data.correct_response){
+		if (data.key_press == data.optimal_response){
 			correct = true
 		}
-		jsPsych.data.addDataToLastTrial({'correct': correct})
+		jsPsych.data.addDataToLastTrial({
+			'correct': correct,
+			'stim_chosen': chosen_stim
+		})
 	}
 };
 

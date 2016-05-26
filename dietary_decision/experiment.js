@@ -88,8 +88,12 @@ var setUpTest = function() {
   var key = ''
   for (var j = 0; j < stims.length; j++) {
     key = stims[j]
-    ratings.taste.push(stim_ratings[key].taste)
-    ratings.health.push(stim_ratings[key].health)
+    if (stim_ratings[key].taste !== 'NaN') {
+      ratings.taste.push(stim_ratings[key].taste)
+    }
+    if (stim_ratings[key].health !== 'NaN') {
+      ratings.health.push(stim_ratings[key].health)
+    }
   }
   var median_taste = math.median(ratings.taste)
   var median_health = math.median(ratings.health)
@@ -174,7 +178,7 @@ for (var i = 0; i < stims.length; i++) {
 //preload images
 jsPsych.pluginAPI.preloadImages(images)
 
-stims = stims
+var current_trial = 0
 var health_stims = jsPsych.randomization.shuffle(stims)
 var taste_stims = jsPsych.randomization.shuffle(stims)
 var decision_stims = []
@@ -285,7 +289,10 @@ var start_health_block = {
   },
   text: '<div class = centerbox><p class = "center-block-text">In the next block of trials, rate the healthiness of each food item without regard for its taste. Press <strong>enter</strong> to begin.</p></div>',
   cont_key: [13],
-  timing_post_trial: 500
+  timing_post_trial: 500,
+  on_finish: function() {
+  	current_trial = 0
+  }
 };
 
 var start_taste_block = {
@@ -296,7 +303,10 @@ var start_taste_block = {
   timing_response: 180000,
   text: '<div class = centerbox><p class = "center-block-text">In the next block of trials, rate the tastiness of each food item without regard for its healthiness. Press <strong>enter</strong> to begin.</p></div>',
   cont_key: [13],
-  timing_post_trial: 500
+  timing_post_trial: 500,
+  on_finish: function() {
+  	current_trial = 0
+  }
 };
 
 var setup_block = {
@@ -316,7 +326,10 @@ var start_decision_block = {
   },
   text: getDecisionText,
   cont_key: [13],
-  timing_post_trial: 500
+  timing_post_trial: 500,
+  on_finish: function() {
+  	current_trial = 0
+  }
 };
 
 
@@ -350,10 +363,15 @@ var health_block = {
   timing_post_trial: 500,
   on_finish: function(data) {
     var numeric_rating = healthy_responses.indexOf(data.mouse_click) - 2
+    if (data.mouse_click === -1) {
+      numeric_rating = 'NaN'
+    }
     jsPsych.data.addDataToLastTrial({
       'stim': curr_stim.slice(0, -4),
-      'coded_response': numeric_rating
+      'coded_response': numeric_rating,
+      'trial_num': current_trial
     })
+    current_trial += 1
     stim_ratings[curr_stim].health = numeric_rating
   }
 }
@@ -373,10 +391,15 @@ var taste_block = {
   timing_post_trial: 500,
   on_finish: function(data) {
     var numeric_rating = tasty_responses.indexOf(data.mouse_click) - 2
+    if (data.mouse_click === -1) {
+      numeric_rating = 'NaN'
+    }
     jsPsych.data.addDataToLastTrial({
       'stim': curr_stim.slice(0, -4),
-      'coded_response': numeric_rating
+      'coded_response': numeric_rating,
+      'trial_num': current_trial
     })
+    current_trial += 1
     stim_ratings[curr_stim].taste = numeric_rating
   }
 }
@@ -402,8 +425,10 @@ var decision_block = {
       'reference': reference_stim.slice(0, -4),
       'stim_rating': stim_rating,
       'reference_rating': reference_rating,
-      'coded_response': decision_rating
+      'coded_response': decision_rating,
+      'trial_num': current_trial
     })
+    current_trial += 1
   }
 }
 
