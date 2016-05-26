@@ -1,11 +1,11 @@
 .topbox{
   width:35vw;
-  height: 20vw;
+  height: 30vh;
   position:absolute;
-  top:10%;
+  top:50%;
   left:50%;
   margin-right:-50%;
-  transform: translate(-50%,0%);
+  transform: translate(-50%,-50%);
 }
 
 .bottombox {
@@ -20,23 +20,25 @@
 
 .decision-left {
   width:14vw;
-  height: 20vw;
+  height: 3.5vw;
   position:absolute;
   top:50%;
   left:50%;
   margin-right:-50%;
-  transform: translate(-165%,-50%);
+  transform: translate(-200%,-50%);
+  text-align: center;
+  font-size:3vw;
 }
-
-
 .decision-right {
   width:14vw;
-  height: 14vw;
+  height: 3.5vw;
   position:absolute;
   top:50%;
   left:50%;
   margin-right:-50%;
-  transform: translate(65%,-50%);
+  transform: translate(100%,-50%);
+  text-align: center;
+  font-size:3vw;
 }
 .centerbox {
   width:35vw;
@@ -60,7 +62,7 @@ transform: translate(-50%, -25%);
 
 img {
 display: block;
-height: 13vw;
+height: 25vw;
 position: absolute;
 top: 50%;
 left: 50%;
