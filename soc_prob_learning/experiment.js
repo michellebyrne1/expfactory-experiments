@@ -69,17 +69,12 @@ function assessPerformance() {
 var getStim = function() {
 	stim = firstPhaseStimsComplete.image.pop()
 	curr_data = firstPhaseStimsComplete.data.pop()
+	rewardAmount = rewards.pop()
 	return stim;
 }
 
 var getData = function() {
 	return curr_data
-}
-
-var getSecondPhaseStim = function() {
-	stim = secondPhaseStimsComplete.image.pop()
-	curr_data = secondPhaseStimsComplete.data.pop()
-	return stim;
 }
 
 var getResponse = function() {
@@ -107,6 +102,16 @@ var genResponses = function(stimuli) {
 	}
 	return answers;
 };
+var getCorrectStatement = function() {
+	pointText = (rewardAmount == 1) ? ' point' : ' points';
+	correctStatement = '<div class = feedback-box><div style="color:green"; class = center-text>' + rewardAmount + pointText + '!</div></div>';
+	return correctStatement 
+}
+var getIncorrectStatement = function() {
+	pointText = (rewardAmount == 1) ? ' point' : ' points';
+	inCorrectStatement = '<div class = feedback-box><div style="color:green"; class = center-text><strike>' + rewardAmount + pointText + '</strike></div></div>';
+	return inCorrectStatement
+}
 
 
 
@@ -238,6 +243,7 @@ for(var j = 0; j < stims.length; j++){
 
 var firstPhaseStimsComplete = jsPsych.randomization.repeat(firstPhaseStims, stimSetRepNum, true);
 var answers = genResponses(firstPhaseStimsComplete)
+var rewards = jsPsych.randomization.repeat([1, 5], FP_trials/2);	
 var curr_data = ''
 
 /* This is to end the training while loop, if the subject has reached 6 training blocks */
@@ -277,6 +283,18 @@ var post_task_block = {
    rows: [15, 15],
    columns: [60,60]
 };
+//Set up PID entry
+//
+var enter_pid_block = {
+	type: 'survey-text',
+	data: {
+		trial_id: "PID"
+	},
+	questions: ['<p class = center-block-text style = "font-size: 20px">Please enter the participant\'s ID number.</p>'],
+	rows: [1],
+	columns: [4]
+}
+
 
 /* define static blocks */
 var feedback_instruct_text =
@@ -298,7 +316,7 @@ var instructions_block = {
 		trial_id: "instruction"
 	},
 	pages: [
-		'<div class = bigtextbox><p class = block-text>In this experiment, you\'re going to see a series of pictures of faces, as well as a couple of patterns. Along with each picture, you\'ll see a pair of words, and we want you to try to guess which word goes with the picture. Sometimes the words are about whether the person in the picture is <strong>popular</strong> or <strong>unpopular</strong>. Sometimes they\'re about whether the person is <strong>dating</strong> someone or <strong>looking</strong> for someone to date. Sometimes they\'re about whether the person likes <strong>bananas</strong> or <strong>oranges</strong>. And finally, for the patterns, the words are about whether it will be <strong>rainy</strong> or <strong>sunny</strong>. </p><p class=block-text>For each picture, you must choose one of the words by pressing either the <strong>left</strong> or <strong>right arrow key</strong> to correspond with the left or right word. </p><p class=block-text>You\'ll see the same picture more than once, and the same word goes with the same picture most of the time, but not always. For each correct guess you\'ll get points, so try to guess correctly as often as you can to get the most points.</p><p class = block-text>Keep in mind that you might not know for sure which word goes with which picture, so just make your best guess, and don\'t think about it too much. You\'ll learn the best answer even if it doesn\'t feel like it.</p></div>',
+		'<div class = bigtextbox><p class = block-text>In this experiment, you\'re going to see a series of pictures of faces, as well as a couple of patterns. Along with each picture, you\'ll see a pair of words, and we want you to try to guess which word goes with the picture. Sometimes the words are about whether the person in the picture is <strong>popular</strong> or <strong>unpopular</strong>. Sometimes they\'re about whether the person is <strong>dating</strong> someone or <strong>looking</strong> for someone to date. Sometimes they\'re about whether the person likes <strong>bananas</strong> or <strong>oranges</strong>. And finally, for the patterns, the words are about whether it will be <strong>rainy</strong> or <strong>sunny</strong>. </p><p class=block-text>For each picture, you must choose one of the words by pressing either the <strong>left</strong> or <strong>right arrow key</strong> to correspond with the left or right word. </p><p class=block-text>You\'ll see the same picture more than once, and the same word goes with the same picture most of the time, but not always. For each correct guess you\'ll get points, but if you guess incorrectly, you\'ll see the number of points you could have gotten crossed out. Try to guess correctly as often as you can to get the most points.</p><p class = block-text>Keep in mind that you might not know for sure which word goes with which picture, so just make your best guess, and don\'t think about it too much. You\'ll learn the best answer even if it doesn\'t feel like it.</p></div>',
 	],
 	allow_keys: false,
 	show_clickable_nav: true,
@@ -343,8 +361,8 @@ var break_block = {
 		trial_id: "break",
 		exp_id: 'soc_prob_learning'
 	},
-	timing_response: 20000,
-	text: '<div class = centerbox><p class = center-block-text>Take a short break (10-20 s)</p><p class = center-block-text>Press <strong>enter</strong> to continue.</p></div>',
+	timing_response: 15000,
+	text: '<div class = centerbox><p class = center-block-text>Take a short break.</p><p class = center-block-text>Task will automatically start in 15 seconds, or <br />press <strong>enter</strong> to continue.</p></div>',
 	cont_key: [13],
 };
 
@@ -368,14 +386,14 @@ for (i = 0; i < 96; i++) {
 		key_answer: getResponse,
 		choices: choices,
 		//prompt: '<div class = topbox><div class = center-text>Optional Prompt</div></div>',
-		correct_text: '<div class = feedback-box><div style="color:green"; class = center-text>Correct!</div></div>',
-		incorrect_text: '<div class = feedback-box><div style="color:red"; class = center-text>Incorrect</div></div>',
+		correct_text: getCorrectStatement,
+		incorrect_text: getIncorrectStatement,
 		timeout_message: '<div class = feedback-box><div class = center-text>no response detected</div></div>',
-		timing_stim: 4000,
-		timing_response: 4000,
+		timing_stim: 2250,
+		timing_response: 2250,
 		timing_feedback_duration: 750,
 		response_ends_trial: true,
-		timing_post_trial: 500,
+		timing_post_trial: 250,
 		is_html: true,
 		data: getData,
 		on_finish: function(data) {
@@ -389,7 +407,8 @@ for (i = 0; i < 96; i++) {
 			jsPsych.data.addDataToLastTrial({
 				'feedback': data.correct,
 				'correct': correct,
-				'stim_chosen': chosen_stim
+				'stim_chosen': chosen_stim,
+				'reward_possible': rewardAmount
 			})
 		}
 	};
@@ -435,6 +454,7 @@ var performance_criteria = {
 		} else {
 			firstPhaseStimsComplete = jsPsych.randomization.repeat(firstPhaseStims, stimSetRepNum, true);
 			answers = genResponses(firstPhaseStimsComplete)
+			rewards = jsPsych.randomization.repeat([1, 5], FP_trials/2);	
 			return true
 		}
 
@@ -457,6 +477,7 @@ var end_block = {
 
 /* create experiment definition array */
 var soc_prob_learning_experiment = [];
+soc_prob_learning_experiment.push(enter_pid_block); 
 soc_prob_learning_experiment.push(instruction_node);
 soc_prob_learning_experiment.push(FP_block);
 soc_prob_learning_experiment.push(performance_criteria);
