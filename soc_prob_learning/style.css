@@ -40,6 +40,15 @@
   text-align: center;
   font-size:3vw;
 }
+.bigtextbox{
+  width:70vw;
+  height: 20vw;
+  position:absolute;
+  top:10%;
+  left:50%;
+  margin-right:-50%;
+  transform: translate(-50%,0%);
+}
 .centerbox {
   width:35vw;
   height: 20vw;
@@ -48,6 +57,15 @@
   left:50%;
   margin-right:-50%;
   transform: translate(-50%,-50%);
+}
+.feedback-box{
+  width:70vw;
+  height: 30vh;
+  position:absolute;
+  top:31%;
+  left:50%;
+  margin-right:-50%;
+  transform: translate(-50%,20vw);
 }
 
 

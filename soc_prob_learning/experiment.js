@@ -280,7 +280,7 @@ var post_task_block = {
 
 /* define static blocks */
 var feedback_instruct_text =
-	'Welcome to the experiment. This experiment will take about 14 minutes. Press <strong>enter</strong> to begin.'
+	'Welcome to the experiment. This experiment will take about 20 minutes. Press <strong>enter</strong> to begin.'
 var feedback_instruct_block = {
 	type: 'poldrack-text',
 	data: {
@@ -298,7 +298,7 @@ var instructions_block = {
 		trial_id: "instruction"
 	},
 	pages: [
-		'<div class = centerbox><p class = block-text>This experiment is composed of two phases.  During the first phase, you will be presented with one of three pairs of abstract shapes.  For each pair, you must choose one of the shapes by pressing either the <strong>left</strong> or <strong>right arrow key</strong> to correspond with the left or right image respectively.</p><p class = block-text>Each shape has a different chance of being correct. Your task is to maximize your points by selecting the shape with the higher probability of being correct on each trial.</p></div>',
+		'<div class = bigtextbox><p class = block-text>In this experiment, you\'re going to see a series of pictures of faces, as well as a couple of patterns. Along with each picture, you\'ll see a pair of words, and we want you to try to guess which word goes with the picture. Sometimes the words are about whether the person in the picture is <strong>popular</strong> or <strong>unpopular</strong>. Sometimes they\'re about whether the person is <strong>dating</strong> someone or <strong>looking</strong> for someone to date. Sometimes they\'re about whether the person likes <strong>bananas</strong> or <strong>oranges</strong>. And finally, for the patterns, the words are about whether it will be <strong>rainy</strong> or <strong>sunny</strong>. </p><p class=block-text>For each picture, you must choose one of the words by pressing either the <strong>left</strong> or <strong>right arrow key</strong> to correspond with the left or right word. </p><p class=block-text>You\'ll see the same picture more than once, and the same word goes with the same picture most of the time, but not always. For each correct guess you\'ll get points, so try to guess correctly as often as you can to get the most points.</p><p class = block-text>Keep in mind that you might not know for sure which word goes with which picture, so just make your best guess, and don\'t think about it too much. You\'ll learn the best answer even if it doesn\'t feel like it.</p></div>',
 	],
 	allow_keys: false,
 	show_clickable_nav: true,
@@ -368,9 +368,9 @@ for (i = 0; i < 96; i++) {
 		key_answer: getResponse,
 		choices: choices,
 		//prompt: '<div class = topbox><div class = center-text>Optional Prompt</div></div>',
-		correct_text: '<div class = bottombox><div style="color:green"; class = center-text>Correct!</div></div>',
-		incorrect_text: '<div class = bottombox><div style="color:red"; class = center-text>Incorrect</div></div>',
-		timeout_message: '<div class = bottombox><div class = center-text>no response detected</div></div>',
+		correct_text: '<div class = feedback-box><div style="color:green"; class = center-text>Correct!</div></div>',
+		incorrect_text: '<div class = feedback-box><div style="color:red"; class = center-text>Incorrect</div></div>',
+		timeout_message: '<div class = feedback-box><div class = center-text>no response detected</div></div>',
 		timing_stim: 4000,
 		timing_response: 4000,
 		timing_feedback_duration: 750,
