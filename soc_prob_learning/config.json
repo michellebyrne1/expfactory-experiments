@@ -1,6 +1,6 @@
 [
     {
-        "name": "Probabilistic Selection Task",
+        "name": "Social Probabilistic Learning",
         "template":"jspsych",
         "run": [
                  "static/js/jspsych/jspsych.js",
@@ -18,8 +18,9 @@
                  "style.css"
                ],
         "exp_id": "soc_prob_learning",
-        "cognitive_atlas_task_id": "trm_5667483dcc371",
+        "cognitive_atlas_task_id": "trm_4cacf22a22d80",
         "contributors": [
+			 "John Flournoy",
                          "Jamie Li",
                          "Ian Eisenberg",
                          "Zeynep Enkavi",
@@ -28,7 +29,7 @@
                          "Russell Poldrack"
                         ], 
         "time":14,
-        "reference": "http://science.sciencemag.org/content/sci/suppl/2004/12/10/1102941.DC1/Frank.SOM.pdf",
+        "reference": "",
         "publish":"True",
         "experiment_variables": [{
                                  "name":"credit_var",
