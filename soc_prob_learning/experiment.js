@@ -104,12 +104,12 @@ var genResponses = function(stimuli) {
 };
 var getCorrectStatement = function() {
 	pointText = (rewardAmount == 1) ? ' point' : ' points';
-	correctStatement = '<div class = feedback-box><div style="color:green"; class = center-text>' + rewardAmount + pointText + '!</div></div>';
+	correctStatement = '<div class = feedback-box><div style="color:green"; class = center-text>' + rewardAmount + ' / ' + rewardAmount + pointText + '!</div></div>';
 	return correctStatement 
 }
 var getIncorrectStatement = function() {
 	pointText = (rewardAmount == 1) ? ' point' : ' points';
-	inCorrectStatement = '<div class = feedback-box><div style="color:green"; class = center-text><strike>' + rewardAmount + pointText + '</strike></div></div>';
+	inCorrectStatement = '<div class = feedback-box><div style="color:green"; class = center-text>' + '0 / ' + rewardAmount + pointText + '</div></div>';
 	return inCorrectStatement
 }
 
@@ -187,7 +187,8 @@ var stimsA = [
 ];
 
 firstPhaseStims = [];
-stims=[stimsM,stimsF,stimsA]
+stims=[stimsM,stimsF,stimsA];
+stimGender=['m', 'f', 'a'];
 /* THIS IS FOR FIRST PHASE STIMS,  randomized and counterbalanced*/
 for(var j = 0; j < stims.length; j++){
 	for (var i = 0; i < stims[j].length; i++) {
@@ -211,6 +212,7 @@ for(var j = 0; j < stims.length; j++){
 				break;
 		}
 		var order1_stim = {}
+
 		order1_stim.image = "<div class = topbox><img src='" + stims[j][i][2] +
 			"'></img></div><div class = decision-left>" + prompts[0] + 
 			"</div><div class = decision-right>" + prompts[1] + 
@@ -221,7 +223,9 @@ for(var j = 0; j < stims.length; j++){
 			image: stims[j][i][2],
 			context: prompts[0] + '_' + prompts[1],
 			condition: stims[j][i][0][0] + '_' + stims[j][i][0][1],
-			optimal_response: (stims[j][i][0][0] > stims[j][i][0][1]) ? 37 : 39
+			optimal_response: (stims[j][i][0][0] > stims[j][i][0][1]) ? 37 : 39,
+			stim_gender: stimGender[j]
+
 		}
 		var order2_stim = {}
 		order2_stim.image = "<div class = topbox><img src='" + stims[j][i][2] +
@@ -234,7 +238,9 @@ for(var j = 0; j < stims.length; j++){
 			image: stims[j][i][2],
 			context: prompts[1] + '_' + prompts[0],
 			condition: stims[j][i][0][1] + '_' + stims[j][i][0][0],
-			optimal_response: (stims[j][i][0][1] > stims[j][i][0][0]) ? 37 : 39
+			optimal_response: (stims[j][i][0][1] > stims[j][i][0][0]) ? 37 : 39,
+			stim_gender: stimGender[j]
+
 		}
 		firstPhaseStims.push(order1_stim);
 		firstPhaseStims.push(order2_stim);
