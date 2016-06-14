@@ -153,9 +153,10 @@ var resetRound = function() {
 	colors = jsPsych.randomization.shuffle(['green', 'red', 'blue', 'teal', 'yellow', 'orange',
 		'purple', 'brown'
 	]).slice(0,2)
-	numbersArray = jsPsych.randomization.repeat(numbers, 1)
-	color1_index = numbersArray.slice(0,13)
-	color2_index = numbersArray.slice(13)
+	var numbersArray = jsPsych.randomization.repeat(numbers, 1)
+	var num_majority = Math.floor(Math.random()*5) + 13
+	color1_index = numbersArray.slice(0,num_majority)
+	color2_index = numbersArray.slice(num_majority)
 	largeColors = jsPsych.randomization.shuffle([colors[0],colors[1]])
 	trial_start_time = new Date()
 }
@@ -213,7 +214,7 @@ var instructionFunction = function(clicked_id) {
 
 var makeInstructChoice = function(clicked_id) {
 	clickedCards = numbers //set all cards as 'clicked'
-	if (clicked_id == 26) {
+	if (largeColors[['26','27'].indexOf(clicked_id)]==colors[0]) {
 		reward = 100
 	} else if (clicked_id == 27) {
 		reward = -100
@@ -221,11 +222,21 @@ var makeInstructChoice = function(clicked_id) {
 }
 
 var getRewardPractice = function() {
+	var text = ''
+	var correct = false
+	var color_clicked = colors[1]
 	if (reward === 100) {
-		return getBoard(colors, 'instruction') + '<div class = rewardbox><div class = reward-text>Correct! You have won 100 points!</div></div></div>'
+		correct = true
+		color_clicked = colors[0]
+		text = getBoard(colors, 'instruction') + '<div class = rewardbox><div class = reward-text>Correct! You have won 100 points!</div></div></div>'
 	} else  {
-		 return getBoard(colors, 'instruction') + '<div class = rewardbox><div class = reward-text>Incorrect! You have lost 100 points! </div></div>'
+		 text = getBoard(colors, 'instruction') + '<div class = rewardbox><div class = reward-text>Incorrect! You have lost 100 points.</div></div></div>'
 	}
+	jsPsych.data.addDataToLastTrial({
+		correct: correct,
+		color_clicked: color_clicked
+	})
+	return text
 }
 
 var get_post_gap = function() {
@@ -259,7 +270,6 @@ var colors = jsPsych.randomization.repeat(['green', 'red', 'blue', 'teal', 'yell
 var largeColors = []
 var shapes = ['small_square', 'large_square']
 var numbers = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25]
-var numbersArray = jsPsych.randomization.repeat(numbers, 1)
 var clickedCards = []
 //preload images
 images = []
@@ -372,7 +382,6 @@ var DW_intro_block = {
 		current_trial = 0
 		trial_start_time = new Date()
 	}
-
 };
 
 var FW_intro_block = {
@@ -389,8 +398,6 @@ var FW_intro_block = {
 		trial_start_time = new Date()
 	}
 };
-
-
 
 var rewardFW_block = {
 	type: 'poldrack-single-stim',
@@ -422,8 +429,6 @@ var rewardDW_block = {
 	response_ends_trial: true,
 };
 
-
-
 var practiceRewardBlock = {
 	type: 'poldrack-single-stim',
 	stimulus: getRewardPractice,
@@ -451,22 +456,7 @@ var practice_block = {
 		correct_respose: colors[0]
 	},
 	timing_post_trial: 0,
-	response_ends_trial: true,
-	on_finish: function(data) {
-		correct = false
-		if (data.mouse_click === 26) {
-			color = largeColors[0]
-		} else {
-			color = largeColors[1]
-		}
-		if (color === data.correct_response) {
-			correct = true
-		}
-		jsPsych.data.addDataToLastTrial({
-			color_clicked: color,
-			correct: correct
-		})
-	}
+	response_ends_trial: true
 };
 
 var test_block = {
@@ -490,8 +480,6 @@ var test_node = {
 	}
 }
 
-
-
 var reset_block = {
 	type: 'call-function',
 	data: {
@@ -500,7 +488,6 @@ var reset_block = {
 	func: resetRound,
 	timing_post_trial: 0
 }
-
 
 /* create experiment definition array */
 var information_sampling_task_experiment = [];
