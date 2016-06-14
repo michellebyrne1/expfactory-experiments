@@ -119,7 +119,7 @@ var getIncorrectStatement = function() {
 /*                 DEFINE EXPERIMENTAL VARIABLES                         */
 /*************************************************************************/
 // generic task variables
-var run_attention_checks = false
+var run_attention_checks = true
 var attention_check_thresh = 0.45
 var sumInstructTime = 0 //ms
 var instructTimeThresh = 0 ///in seconds
@@ -129,33 +129,25 @@ var credit_var = true
 var choices = [37, 39]
 var curr_data = []
 var stim = ''
-/* SPECIFY HOW MANY TRIALS YOU WANT PER TRAINING BLOCK.  FP_trials must be divisible by 96 */
-var FP_trials = 96;
+/* SPECIFY HOW MANY TRIALS YOU WANT PER TRAINING BLOCK.  FP_trials must be divisible by 48 */
+var FP_trials = 48;
 var eachComboNum = FP_trials / 2; /* don't change this line */
-var stimSetRepNum = FP_trials / 32;
+var stimSetRepNum = FP_trials / 16;
 
 /* THIS IS TO RANDOMIZE STIMS */
 var mStimArray = [
 	"/static/experiments/soc_prob_learning/images/m1.png",
 	"/static/experiments/soc_prob_learning/images/m2.png",
 	"/static/experiments/soc_prob_learning/images/m3.png",
-	"/static/experiments/soc_prob_learning/images/m4.png",
-	"/static/experiments/soc_prob_learning/images/m5.png",
-	"/static/experiments/soc_prob_learning/images/m6.png"
 ];
 var fStimArray = [
 	"/static/experiments/soc_prob_learning/images/f1.png",
 	"/static/experiments/soc_prob_learning/images/f2.png",
 	"/static/experiments/soc_prob_learning/images/f3.png",
-	"/static/experiments/soc_prob_learning/images/f4.png",
-	"/static/experiments/soc_prob_learning/images/f5.png",
-	"/static/experiments/soc_prob_learning/images/f6.png"
 ];
 var aStimArray = [
 	"/static/experiments/soc_prob_learning/images/a1.png",
 	"/static/experiments/soc_prob_learning/images/a2.png",
-	"/static/experiments/soc_prob_learning/images/a3.png",
-	"/static/experiments/soc_prob_learning/images/a4.png"
 ];
 jsPsych.pluginAPI.preloadImages(mStimArray)
 jsPsych.pluginAPI.preloadImages(fStimArray)
@@ -163,32 +155,26 @@ jsPsych.pluginAPI.preloadImages(aStimArray)
 var randomMStimArray = jsPsych.randomization.repeat(mStimArray, 1);
 var randomFStimArray = jsPsych.randomization.repeat(fStimArray, 1);
 var randomAStimArray = jsPsych.randomization.repeat(aStimArray, 1);
-var stimsM = [
-	[['80','20'], 'status', randomMStimArray[0]],
-	[['20','80'], 'status', randomMStimArray[1]],
-	[['80','20'], 'mateseek', randomMStimArray[2]],
-	[['20','80'], 'mateseek', randomMStimArray[3]],
-	[['80','20'], 'soc', randomMStimArray[4]],
-	[['20','80'], 'soc', randomMStimArray[5]]
-];
-var stimsF = [
-	[['80','20'], 'status', randomFStimArray[0]],
-	[['20','80'], 'status', randomFStimArray[1]],
-	[['80','20'], 'mateseek', randomFStimArray[2]],
-	[['20','80'], 'mateseek', randomFStimArray[3]],
-	[['80','20'], 'soc', randomFStimArray[4]],
-	[['20','80'], 'soc', randomFStimArray[5]]
+
+var randomStatusStimArray = jsPsych.randomization.repeat([randomMStimArray[0], randomFStimArray[0]], 1);
+var randomMateseekStimArray = jsPsych.randomization.repeat([randomMStimArray[1], randomFStimArray[1]], 1);
+var randomSocStimArray = jsPsych.randomization.repeat([randomMStimArray[2], randomFStimArray[2]], 1);
+
+var stimsMF = [
+	[['80','20'], 'status', randomStatusStimArray[0]],
+	[['20','80'], 'status', randomStatusStimArray[1]],
+	[['80','20'], 'mateseek', randomMateseekStimArray[0]],
+	[['20','80'], 'mateseek', randomMateseekStimArray[1]],
+	[['80','20'], 'soc', randomSocStimArray[0]],
+	[['20','80'], 'soc', randomSocStimArray[1]]
 ];
 var stimsA = [
 	[['80','20'], 'abstract', randomAStimArray[0]],
 	[['20','80'], 'abstract', randomAStimArray[1]],
-	[['80','20'], 'abstract', randomAStimArray[2]],
-	[['20','80'], 'abstract', randomAStimArray[3]]
 ];
 
 firstPhaseStims = [];
-stims=[stimsM,stimsF,stimsA];
-stimGender=['m', 'f', 'a'];
+stims=[stimsMF,stimsA];
 /* THIS IS FOR FIRST PHASE STIMS,  randomized and counterbalanced*/
 for(var j = 0; j < stims.length; j++){
 	for (var i = 0; i < stims[j].length; i++) {
@@ -217,6 +203,8 @@ for(var j = 0; j < stims.length; j++){
 			"'></img></div><div class = decision-left>" + prompts[0] + 
 			"</div><div class = decision-right>" + prompts[1] + 
 			"</div>";
+		parsedFilename = stims[j][i][2].match("/([mfa])[0-9]\.png");
+		stimGender = parsedFilename[1];
 		order1_stim.data = {
 			trial_id: 'stim',
 			exp_stage: 'training',
@@ -224,8 +212,7 @@ for(var j = 0; j < stims.length; j++){
 			context: prompts[0] + '_' + prompts[1],
 			condition: stims[j][i][0][0] + '_' + stims[j][i][0][1],
 			optimal_response: (stims[j][i][0][0] > stims[j][i][0][1]) ? 37 : 39,
-			stim_gender: stimGender[j]
-
+			stim_gender: stimGender
 		}
 		var order2_stim = {}
 		order2_stim.image = "<div class = topbox><img src='" + stims[j][i][2] +
@@ -239,8 +226,7 @@ for(var j = 0; j < stims.length; j++){
 			context: prompts[1] + '_' + prompts[0],
 			condition: stims[j][i][0][1] + '_' + stims[j][i][0][0],
 			optimal_response: (stims[j][i][0][1] > stims[j][i][0][0]) ? 37 : 39,
-			stim_gender: stimGender[j]
-
+			stim_gender: stimGender
 		}
 		firstPhaseStims.push(order1_stim);
 		firstPhaseStims.push(order2_stim);
@@ -375,7 +361,7 @@ var break_block = {
 var break_node = {
 	timeline: [break_block],
 	conditional_function: function(){
-		if(training_count==4){
+		if(training_count==8){
 			return false;
 		} else {
 			return true;
@@ -385,7 +371,7 @@ var break_node = {
 
 
 training_trials = []
-for (i = 0; i < 96; i++) {
+for (i = 0; i < 48; i++) {
 	var training_block = {
 		type: 'poldrack-categorize',
 		stimulus: getStim,
@@ -455,7 +441,7 @@ var performance_criteria = {
 //		var ef_percent = ef_total_correct / ef_cum_trials
 		training_count = training_count + 1;
 
-		if (training_count == 4) {
+		if (training_count == 8) {
 			return false
 		} else {
 			firstPhaseStimsComplete = jsPsych.randomization.repeat(firstPhaseStims, stimSetRepNum, true);
