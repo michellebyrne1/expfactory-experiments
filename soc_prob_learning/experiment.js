@@ -1,6 +1,31 @@
 /* ***************************************** */
 /*          Define helper functions          */
 /* ***************************************** */
+function saveDataOnServer(){
+	filedata = jsPsych.data.dataAsCSV();
+	surveyTrials = jsPsych.data.getTrialsOfType('survey-text');
+	for (var i = 0; i < surveyTrials.length; i++){
+		if (surveyTrials[i].trial_id == "PID") {
+			pid_trial = surveyTrials[i];
+			break;
+		}
+	}
+	pid_response = JSON.parse(pid_trial.responses).Q0;
+	filenameMatch = pid_response.match(".*([0-9]{3}).*");
+	if (filenameMatch == null) {
+		var d = new Date();
+		filename = "split-bad_pid_" + d.getTime() + ".csv";	
+	} else {
+		filename = "split-" + filenameMatch[1] + ".csv";
+	}
+	$.ajax({
+		type:'post',
+		cache: false,
+		url: 'static/experiments/soc_prob_learning/save_data.php', // this is the path to the above PHP script
+		data: {filename: filename, filedata: filedata}
+	});
+}
+
 function evalAttentionChecks() {
 	var check_percent = 1
 	if (run_attention_checks) {
@@ -119,7 +144,8 @@ var getIncorrectStatement = function() {
 /*                 DEFINE EXPERIMENTAL VARIABLES                         */
 /*************************************************************************/
 // generic task variables
-var run_attention_checks = true
+var run_attention_checks = false
+var save_data_to_server = true //requires server that allows POST and php scripts
 var attention_check_thresh = 0.45
 var sumInstructTime = 0 //ms
 var instructTimeThresh = 0 ///in seconds
@@ -283,7 +309,7 @@ var enter_pid_block = {
 		trial_id: "PID"
 	},
 	questions: ['<p class = center-block-text style = "font-size: 20px">Please enter the participant\'s ID number.</p>'],
-	rows: [1],
+	rows: [3],
 	columns: [4]
 }
 
@@ -462,10 +488,13 @@ var end_block = {
 	timing_response: 180000,
 	text: '<div class = centerbox><p class = center-block-text>Finished with this task!</p><p class = center-block-text>Press <strong>enter</strong> to continue.</p></div>',
 	cont_key: [13],
-	in_finish: assessPerformance
+	on_finish: function(data) {
+		assessPerformance(data);
+		if (save_data_to_server == true){
+			saveDataOnServer(); 
+		}
+	}
 };
-
-
 
 /* create experiment definition array */
 var soc_prob_learning_experiment = [];
@@ -474,5 +503,5 @@ soc_prob_learning_experiment.push(instruction_node);
 soc_prob_learning_experiment.push(FP_block);
 soc_prob_learning_experiment.push(performance_criteria);
 soc_prob_learning_experiment.push(attention_node);
-soc_prob_learning_experiment.push(post_task_block)
+soc_prob_learning_experiment.push(post_task_block);
 soc_prob_learning_experiment.push(end_block);
