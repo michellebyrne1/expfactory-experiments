@@ -2,16 +2,16 @@
 /*          Define helper functions          */
 /* ***************************************** */
 function saveDataOnServer(){
-	filedata = jsPsych.data.dataAsCSV();
-	surveyTrials = jsPsych.data.getTrialsOfType('survey-text');
+	var filedata = jsPsych.data.dataAsCSV();
+	var surveyTrials = jsPsych.data.getTrialsOfType('survey-text');
 	for (var i = 0; i < surveyTrials.length; i++){
 		if (surveyTrials[i].trial_id == "PID") {
 			pid_trial = surveyTrials[i];
 			break;
 		}
 	}
-	pid_response = JSON.parse(pid_trial.responses).Q0;
-	filenameMatch = pid_response.match(".*([0-9]{3}).*");
+	var pid_response = JSON.parse(pid_trial.responses).Q0;
+	var filenameMatch = pid_response.match(".*([0-9]{3}).*");
 	if (filenameMatch == null) {
 		var d = new Date();
 		filename = "split-bad_pid_" + d.getTime() + ".csv";	
@@ -24,6 +24,19 @@ function saveDataOnServer(){
 		url: 'static/experiments/soc_prob_learning/save_data.php', // this is the path to the above PHP script
 		data: {filename: filename, filedata: filedata}
 	});
+}
+
+function summarizePoints(){
+	var some_data = jsPsych.data.getTrialsOfType('poldrack-categorize');
+	var points = 0;
+	var possible = 0;
+	for (var i = 0; i < some_data.length; i++){
+		if (some_data[i].feedback){
+			points += some_data[i].reward_possible;
+		}
+		possible += some_data[i].reward_possible;
+	}
+	return points + ' / ' + possible;
 }
 
 function evalAttentionChecks() {
@@ -467,7 +480,7 @@ var performance_criteria = {
 //		var ef_percent = ef_total_correct / ef_cum_trials
 		training_count = training_count + 1;
 
-		if (training_count == 8) {
+		if (training_count == 1) {
 			return false
 		} else {
 			firstPhaseStimsComplete = jsPsych.randomization.repeat(firstPhaseStims, stimSetRepNum, true);
@@ -486,10 +499,16 @@ var end_block = {
 		exp_id: 'soc_prob_learning'
 	},
 	timing_response: 180000,
-	text: '<div class = centerbox><p class = center-block-text>Finished with this task!</p><p class = center-block-text>Press <strong>enter</strong> to continue.</p></div>',
+	text: function() {
+		return '<div class = centerbox><p class = center-block-text>Finished with this task! You earned a total of <strong>' + summarizePoints() + '</strong> points! Remember to tell the researcher how many points you earned.</p><p class = center-block-text>Press <strong>enter</strong> to continue.</p></div>'
+	},
 	cont_key: [13],
 	on_finish: function(data) {
 		assessPerformance(data);
+		var total_points = summarizePoints();
+		jsPsych.data.addDataToLastTrial({
+			'total_points' : total_points
+		})
 		if (save_data_to_server == true){
 			saveDataOnServer(); 
 		}
