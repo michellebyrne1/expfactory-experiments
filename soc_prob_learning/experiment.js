@@ -12,11 +12,11 @@ function saveDataOnServer(){
 	}
 	var pid_response = JSON.parse(pid_trial.responses).Q0;
 	var filenameMatch = pid_response.match(".*([0-9]{3}).*");
+	var d = new Date();
 	if (filenameMatch == null) {
-		var d = new Date();
 		filename = "split-bad_pid_" + d.getTime() + ".csv";	
 	} else {
-		filename = "split-" + filenameMatch[1] + ".csv";
+		filename = "split-" + filenameMatch[1] + "-" + d.getTime() + ".csv";
 	}
 	$.ajax({
 		type:'post',
