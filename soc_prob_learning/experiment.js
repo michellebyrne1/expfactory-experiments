@@ -136,18 +136,18 @@ var stimSetRepNum = FP_trials / 16;
 
 /* THIS IS TO RANDOMIZE STIMS */
 var mStimArray = [
-	"/static/experiments/soc_prob_learning/images/m1.png",
-	"/static/experiments/soc_prob_learning/images/m2.png",
-	"/static/experiments/soc_prob_learning/images/m3.png",
+	"static/experiments/soc_prob_learning/images/m1.png",
+	"static/experiments/soc_prob_learning/images/m2.png",
+	"static/experiments/soc_prob_learning/images/m3.png",
 ];
 var fStimArray = [
-	"/static/experiments/soc_prob_learning/images/f1.png",
-	"/static/experiments/soc_prob_learning/images/f2.png",
-	"/static/experiments/soc_prob_learning/images/f3.png",
+	"static/experiments/soc_prob_learning/images/f1.png",
+	"static/experiments/soc_prob_learning/images/f2.png",
+	"static/experiments/soc_prob_learning/images/f3.png",
 ];
 var aStimArray = [
-	"/static/experiments/soc_prob_learning/images/a1.png",
-	"/static/experiments/soc_prob_learning/images/a2.png",
+	"static/experiments/soc_prob_learning/images/a1.png",
+	"static/experiments/soc_prob_learning/images/a2.png",
 ];
 jsPsych.pluginAPI.preloadImages(mStimArray)
 jsPsych.pluginAPI.preloadImages(fStimArray)
