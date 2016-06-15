@@ -480,7 +480,7 @@ var performance_criteria = {
 //		var ef_percent = ef_total_correct / ef_cum_trials
 		training_count = training_count + 1;
 
-		if (training_count == 1) {
+		if (training_count == 8) {
 			return false
 		} else {
 			firstPhaseStimsComplete = jsPsych.randomization.repeat(firstPhaseStims, stimSetRepNum, true);
