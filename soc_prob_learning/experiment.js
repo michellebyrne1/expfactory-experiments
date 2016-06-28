@@ -1,7 +1,7 @@
 /* ***************************************** */
 /*          Define helper functions          */
 /* ***************************************** */
-function saveDataOnServer(){
+function saveDataOnServer(usepid){
 	var filedata = jsPsych.data.dataAsCSV();
 	var surveyTrials = jsPsych.data.getTrialsOfType('survey-text');
 	for (var i = 0; i < surveyTrials.length; i++){
@@ -13,10 +13,17 @@ function saveDataOnServer(){
 	var pid_response = JSON.parse(pid_trial.responses).Q0;
 	var filenameMatch = pid_response.match(".*([0-9]{3}).*");
 	var d = new Date();
-	if (filenameMatch == null) {
+	if (filenameMatch == null && usepid) {
 		filename = "split-bad_pid_" + d.getTime() + ".csv";	
-	} else {
+	} else if (usepid) {
 		filename = "split-" + filenameMatch[1] + "-" + d.getTime() + ".csv";
+	} else {
+		aYear = d.getFullYear().toString();
+		aMonth = d.getMonth();
+		aDate = d.getDate();
+		aMonth = (aMonth < 10) ? "0" + aMonth : aMonth.toString();
+		aDate = (aDate < 10) ? "0" + aDate : aDate.toString();
+		filename = ".split-" + aYear + aMonth + aDate + d.getTime() + ".csv";
 	}
 	$.ajax({
 		type:'post',
@@ -348,7 +355,7 @@ var instructions_block = {
 	},
 	pages: [
 		'<div class = bigtextbox><p class = block-text>In this experiment, you\'re going to see pictures of 6 different faces. Along with each picture, you\'ll see a pair of words, and we want you to try to guess which word goes with which picture.</p><p class = block-text>For 2 faces, you\'ll guess whether the person in the picture is <strong>popular</strong> or <strong>unpopular</strong>.</p><p class = block-text>For 2 other faces, you\'ll guess whether the person is <strong>dating</strong> someone or <strong>looking</strong> for someone to date.</p><p class = block-text>For the last 2 faces, you\'ll guess whether the person likes <strong>bananas</strong> or <strong>oranges</strong>.</p><p class = block-text>To make your guess, press the <strong>left arrow</strong> for the left answer or the <strong>right arrow</strong> for the right answer.</p></div>',
-	'<div class = bigtextbox><p class = block-text><p class = block-text>The same word goes with the same picture most of the time, <em>but not always</em>. After each guess you\'ll see the number of points you earned. For example, if you see “5/5 points” below the picture, it means you were right and earned 5 points. But if you guess incorrectly, you won\'t get any points, so you\'ll just see the number of points you could have gotten. For example, “0/1 point” means you were wrong and got 0 out of 1 possible point.</p><p class = block-text>Try to guess correctly as often as you can to get the most points.</p><p class = block-text>Keep in mind that you might not know for sure which word goes with which picture, so just make your best guess, and don\'t think about it too much. You\'ll learn the best answer even if it doesn\'t feel like it.</p><p class = block-text>Remember, press the <strong>left arrow</strong> for the left answer or the <strong>right arrow</strong> for the right answer.</p></div>'],
+	'<div class = bigtextbox><p class = block-text>The same word goes with the same picture most of the time, <em>but not always</em>. After each guess you\'ll see the number of points you earned. For example, if you see “5/5 points” below the picture, it means you were right and earned 5 points. But if you guess incorrectly, you won\'t get any points, so you\'ll just see the number of points you could have gotten. For example, “0/1 point” means you were wrong and got 0 out of 1 possible point.</p><p class = block-text>Try to guess correctly as often as you can to get the most points.</p><p class = block-text>Keep in mind that you might not know for sure which word goes with which picture, so just make your best guess, and don\'t think about it too much. You\'ll learn the best answer even if it doesn\'t feel like it.</p><p class = block-text>Remember, press the <strong>left arrow</strong> for the left answer or the <strong>right arrow</strong> for the right answer.</p></div>'],
 	allow_keys: false,
 	show_clickable_nav: true,
 	timing_post_trial: 1000
@@ -381,7 +388,7 @@ var FP_block = {
 		trial_id: "first_phase_intro"
 	},
 	timing_response: 180000,
-	text: '<div class = centerbox><p class = center-block-text> We will now begin Phase 1.  Press <strong>enter</strong> to begin. </p></div>',
+	text: '<div class = centerbox><p class = center-block-text> We will now begin the game.  Press <strong>enter</strong> to begin. </p></div>',
 	cont_key: [13],
 	timing_post_trial: 1000
 };
@@ -488,7 +495,17 @@ var performance_criteria = {
 			rewards = jsPsych.randomization.repeat([1, 5], FP_trials/2);	
 			return true
 		}
-
+	},
+	on_finish: function(data) {
+		assessPerformance(data);
+		var total_points = summarizePoints();
+		jsPsych.data.addDataToLastTrial({
+			'total_points' : total_points
+		})
+		if (save_data_to_server == true){
+			usepid=false;
+			saveDataOnServer(usepid); 
+		}
 	}
 };
 
@@ -510,7 +527,8 @@ var end_block = {
 			'total_points' : total_points
 		})
 		if (save_data_to_server == true){
-			saveDataOnServer(); 
+			usepid=true;
+			saveDataOnServer(usepid); 
 		}
 	}
 };
