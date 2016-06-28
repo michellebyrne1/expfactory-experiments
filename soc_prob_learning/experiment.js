@@ -170,8 +170,8 @@ var curr_data = []
 var stim = ''
 /* SPECIFY HOW MANY TRIALS YOU WANT PER TRAINING BLOCK.  FP_trials must be divisible by 48 */
 var FP_trials = 48;
-var eachComboNum = FP_trials / 2; /* don't change this line */
-var stimSetRepNum = FP_trials / 16;
+var eachComboNum = FP_trials / 1; /* don't change this line */
+var stimSetRepNum = FP_trials / 12;
 
 /* THIS IS TO RANDOMIZE STIMS */
 var mStimArray = [
