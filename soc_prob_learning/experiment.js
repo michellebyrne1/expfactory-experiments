@@ -213,7 +213,7 @@ var stimsA = [
 ];
 
 firstPhaseStims = [];
-stims=[stimsMF,stimsA];
+stims=[stimsMF]; //dropping abstract stims for now
 /* THIS IS FOR FIRST PHASE STIMS,  randomized and counterbalanced*/
 for(var j = 0; j < stims.length; j++){
 	for (var i = 0; i < stims[j].length; i++) {
@@ -268,7 +268,7 @@ for(var j = 0; j < stims.length; j++){
 			stim_gender: stimGender
 		}
 		firstPhaseStims.push(order1_stim);
-		firstPhaseStims.push(order2_stim);
+		firstPhaseStims.push(order1_stim); //no longer switching sides
 	}
 }
 
@@ -347,8 +347,8 @@ var instructions_block = {
 		trial_id: "instruction"
 	},
 	pages: [
-		'<div class = bigtextbox><p class = block-text>In this experiment, you\'re going to see a series of pictures of faces, as well as a couple of patterns. Along with each picture, you\'ll see a pair of words, and we want you to try to guess which word goes with the picture. Sometimes the words are about whether the person in the picture is <strong>popular</strong> or <strong>unpopular</strong>. Sometimes they\'re about whether the person is <strong>dating</strong> someone or <strong>looking</strong> for someone to date. Sometimes they\'re about whether the person likes <strong>bananas</strong> or <strong>oranges</strong>. And finally, for the patterns, the words are about whether it will be <strong>rainy</strong> or <strong>sunny</strong>. </p><p class=block-text>For each picture, you must choose one of the words by pressing either the <strong>left</strong> or <strong>right arrow key</strong> to correspond with the left or right word. </p><p class=block-text>You\'ll see the same picture more than once, and the same word goes with the same picture most of the time, but not always. For each correct guess you\'ll see the number of points you earn (for example, if you see "5/5 points" below the picture, it means you earned 5 points"), but if you guess incorrectly, you won\'t get any points, so you\'ll just see the number of points you could have gotten ("0/1 point" means you got 0 out of 1 point). Try to guess correctly as often as you can to get the most points.</p><p class = block-text>Keep in mind that you might not know for sure which word goes with which picture, so just make your best guess, and don\'t think about it too much. You\'ll learn the best answer even if it doesn\'t feel like it.</p></div>',
-	],
+		'<div class = bigtextbox><p class = block-text>In this experiment, you\'re going to see pictures of 6 different faces. Along with each picture, you\'ll see a pair of words, and we want you to try to guess which word goes with which picture.</p><p class = block-text>For 2 faces, you\'ll guess whether the person in the picture is <strong>popular</strong> or <strong>unpopular</strong>.</p><p class = block-text>For 2 other faces, you\'ll guess whether the person is <strong>dating</strong> someone or <strong>looking</strong> for someone to date.</p><p class = block-text>For the last 2 faces, you\'ll guess whether the person likes <strong>bananas</strong> or <strong>oranges</strong>.</p><p class = block-text>To make your guess, press the <strong>left arrow</strong> for the left answer or the <strong>right arrow</strong> for the right answer.</p></div>',
+	'<div class = bigtextbox><p class = block-text><p class = block-text>The same word goes with the same picture most of the time, <em>but not always</em>. After each guess you\'ll see the number of points you earned. For example, if you see “5/5 points” below the picture, it means you were right and earned 5 points. But if you guess incorrectly, you won\'t get any points, so you\'ll just see the number of points you could have gotten. For example, “0/1 point” means you were wrong and got 0 out of 1 possible point.</p><p class = block-text>Try to guess correctly as often as you can to get the most points.</p><p class = block-text>Keep in mind that you might not know for sure which word goes with which picture, so just make your best guess, and don\'t think about it too much. You\'ll learn the best answer even if it doesn\'t feel like it.</p><p class = block-text>Remember, press the <strong>left arrow</strong> for the left answer or the <strong>right arrow</strong> for the right answer.</p></div>'],
 	allow_keys: false,
 	show_clickable_nav: true,
 	timing_post_trial: 1000
