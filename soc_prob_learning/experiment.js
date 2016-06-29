@@ -182,14 +182,14 @@ var stimSetRepNum = FP_trials / 12;
 
 /* THIS IS TO RANDOMIZE STIMS */
 var mStimArray = [
-	"static/experiments/soc_prob_learning/images/f42887_e_025.png",
-	"static/experiments/soc_prob_learning/images/f42887_e_037.png",
-	"static/experiments/soc_prob_learning/images/f42887_e_096.png",
+	"static/experiments/soc_prob_learning/images/m_f42887_e_025.png",
+	"static/experiments/soc_prob_learning/images/m_f42887_e_037.png",
+	"static/experiments/soc_prob_learning/images/m_f42887_e_096.png",
 ];
 var fStimArray = [
-	"static/experiments/soc_prob_learning/images/f42887_e_053.png",
-	"static/experiments/soc_prob_learning/images/f42887_e_176.png",
-	"static/experiments/soc_prob_learning/images/f42887_e_182.png",
+	"static/experiments/soc_prob_learning/images/f_f42887_e_053.png",
+	"static/experiments/soc_prob_learning/images/f_f42887_e_176.png",
+	"static/experiments/soc_prob_learning/images/f_f42887_e_182.png",
 ];
 jsPsych.pluginAPI.preloadImages(mStimArray)
 jsPsych.pluginAPI.preloadImages(fStimArray)
@@ -207,10 +207,6 @@ var stimsMF = [
 	[['20','80'], 'mateseek', randomMateseekStimArray[1]],
 	[['80','20'], 'soc', randomSocStimArray[0]],
 	[['20','80'], 'soc', randomSocStimArray[1]]
-];
-var stimsA = [
-	[['80','20'], 'abstract', randomAStimArray[0]],
-	[['20','80'], 'abstract', randomAStimArray[1]],
 ];
 
 firstPhaseStims = [];
@@ -243,7 +239,7 @@ for(var j = 0; j < stims.length; j++){
 			"'></img></div><div class = decision-left>" + prompts[0] + 
 			"</div><div class = decision-right>" + prompts[1] + 
 			"</div>";
-		parsedFilename = stims[j][i][2].match("/([mfa])[0-9]\.png");
+		parsedFilename = stims[j][i][2].match("/([mf])_f42887_e_[0-9][0-9][0-9]\.png");
 		stimGender = parsedFilename[1];
 		order1_stim.data = {
 			trial_id: 'stim',
