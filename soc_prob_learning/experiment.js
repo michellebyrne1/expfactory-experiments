@@ -182,25 +182,19 @@ var stimSetRepNum = FP_trials / 12;
 
 /* THIS IS TO RANDOMIZE STIMS */
 var mStimArray = [
-	"static/experiments/soc_prob_learning/images/m1.png",
-	"static/experiments/soc_prob_learning/images/m2.png",
-	"static/experiments/soc_prob_learning/images/m3.png",
+	"static/experiments/soc_prob_learning/images/f42887_e_025.png",
+	"static/experiments/soc_prob_learning/images/f42887_e_037.png",
+	"static/experiments/soc_prob_learning/images/f42887_e_096.png",
 ];
 var fStimArray = [
-	"static/experiments/soc_prob_learning/images/f1.png",
-	"static/experiments/soc_prob_learning/images/f2.png",
-	"static/experiments/soc_prob_learning/images/f3.png",
-];
-var aStimArray = [
-	"static/experiments/soc_prob_learning/images/a1.png",
-	"static/experiments/soc_prob_learning/images/a2.png",
+	"static/experiments/soc_prob_learning/images/f42887_e_053.png",
+	"static/experiments/soc_prob_learning/images/f42887_e_176.png",
+	"static/experiments/soc_prob_learning/images/f42887_e_182.png",
 ];
 jsPsych.pluginAPI.preloadImages(mStimArray)
 jsPsych.pluginAPI.preloadImages(fStimArray)
-jsPsych.pluginAPI.preloadImages(aStimArray)
 var randomMStimArray = jsPsych.randomization.repeat(mStimArray, 1);
 var randomFStimArray = jsPsych.randomization.repeat(fStimArray, 1);
-var randomAStimArray = jsPsych.randomization.repeat(aStimArray, 1);
 
 var randomStatusStimArray = jsPsych.randomization.repeat([randomMStimArray[0], randomFStimArray[0]], 1);
 var randomMateseekStimArray = jsPsych.randomization.repeat([randomMStimArray[1], randomFStimArray[1]], 1);
