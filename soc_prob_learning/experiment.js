@@ -187,9 +187,9 @@ var mStimArray = [
 	"static/experiments/soc_prob_learning/images/m_f42887_e_096.png",
 ];
 var fStimArray = [
-	"static/experiments/soc_prob_learning/images/f_f42887_e_053.png",
-	"static/experiments/soc_prob_learning/images/f_f42887_e_176.png",
-	"static/experiments/soc_prob_learning/images/f_f42887_e_182.png",
+	"static/experiments/soc_prob_learning/images/f_f42887_e_022.png",
+	"static/experiments/soc_prob_learning/images/f_f42887_e_055.png",
+	"static/experiments/soc_prob_learning/images/f_f42887_e_264.png",
 ];
 jsPsych.pluginAPI.preloadImages(mStimArray)
 jsPsych.pluginAPI.preloadImages(fStimArray)
@@ -225,8 +225,8 @@ for(var j = 0; j < stims.length; j++){
 				prompts[1] = 'Looking';
 				break;
 			case 'soc':
-				prompts[0] = 'Bananas';
-				prompts[1] = 'Oranges';
+				prompts[0] = 'Hungry';
+				prompts[1] = 'Thirsty';
 				break;
 			case 'abstract':
 				prompts[0] = 'Sunny';
@@ -344,8 +344,8 @@ var instructions_block = {
 		trial_id: "instruction"
 	},
 	pages: [
-		'<div class = bigtextbox><p class = block-text>In this experiment, you\'re going to see pictures of 6 different faces. Along with each picture, you\'ll see a pair of words, and we want you to try to guess which word goes with which picture.</p><p class = block-text>For 2 faces, you\'ll guess whether the person in the picture is <strong>popular</strong> or <strong>unpopular</strong>.</p><p class = block-text>For 2 other faces, you\'ll guess whether the person is <strong>dating</strong> someone or <strong>looking</strong> for someone to date.</p><p class = block-text>For the last 2 faces, you\'ll guess whether the person likes <strong>bananas</strong> or <strong>oranges</strong>.</p><p class = block-text>To make your guess, press the <strong>left arrow</strong> for the left answer or the <strong>right arrow</strong> for the right answer.</p></div>',
-	'<div class = bigtextbox><p class = block-text>The same word goes with the same picture most of the time, <em>but not always</em>. After each guess you\'ll see the number of points you earned. For example, if you see "5/5 points" below the picture, it means you were right and earned 5 points. But if you guess incorrectly, you won\'t get any points, so you\'ll just see the number of points you could have gotten. For example, "0/1 point" means you were wrong and got 0 out of 1 possible point.</p><p class = block-text>Try to guess correctly as often as you can to get the most points.</p><p class = block-text>Keep in mind that you might not know for sure which word goes with which picture, so just make your best guess, and don\'t think about it too much. You\'ll learn the best answer even if it doesn\'t feel like it.</p><p class = block-text>Remember, press the <strong>left arrow</strong> for the left answer or the <strong>right arrow</strong> for the right answer.</p></div>'],
+		'<div class = bigtextbox><p class = block-text>In this experiment, you\'re going to see pictures of 6 different faces. Along with each picture, you\'ll see a pair of words, and we want you to try to guess which word goes with which picture.</p><p class = block-text>For 2 faces, you\'ll guess whether the person in the picture is <strong>popular</strong> or <strong>unpopular</strong>.</p><p class = block-text>For 2 other faces, you\'ll guess whether the person is <strong>dating</strong> someone or <strong>looking</strong> for someone to date.</p><p class = block-text>For the last 2 faces, you\'ll guess whether the person is <strong>hungry</strong> or <strong>thirsty</strong>.</p><p class = block-text>To make your guess, press the <strong>left arrow</strong> for the left answer or the <strong>right arrow</strong> for the right answer.</p></div>',
+	'<div class = bigtextbox><p class = block-text>The same word goes with the same picture most of the time, <em>but not always</em>. After each guess you\'ll see the number of points you earned. For example, if you see "5/5 points" below the picture, it means you were right and earned 5 points. But if you guess incorrectly, you won\'t get any points, so you\'ll just see the number of points you could have gotten. For example, "0/1 point" means you were wrong and got 0 out of 1 possible point.</p><p class = block-text>Try to guess correctly as often as you can to get the most points.</p><p class = block-text>Remember, press the <strong>left arrow</strong> for the left answer or the <strong>right arrow</strong> for the right answer.</p></div>'],
 	allow_keys: false,
 	show_clickable_nav: true,
 	timing_post_trial: 1000
