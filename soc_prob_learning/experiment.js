@@ -125,6 +125,23 @@ var getData = function() {
 var getResponse = function() {
 	return answers.pop()
 }
+
+var genRewards = function(stimuli){
+	var possibleRewards=[];
+	var rewardCount = [];
+	for (var i = 0; i < nStimuli; i++) {
+		 possibleRewards[i] = jsPsych.randomization.repeat([1, 5], FP_trials/6/2);
+		 rewardCount[i] = 0;
+	}
+	var rewards = [];
+	for(var i = 0; i < FP_trials; i++) {
+		stimIndex = stimuli.data[i].stimindex;
+		rewards.push(possibleRewards[stimIndex][rewardCount[stimIndex]]);
+		rewardCount[stimIndex] = rewardCount[stimIndex] + 1;
+	}
+	return rewards;
+}
+
 var genResponses = function(stimuli) {
 	var answers_80_20 = jsPsych.randomization.repeat([37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 39, 39, 39, 39, 39],
 		eachComboNum / 24);
@@ -179,6 +196,7 @@ var stim = ''
 var FP_trials = 48;
 var eachComboNum = FP_trials / 1; /* don't change this line */
 var stimSetRepNum = FP_trials / 12;
+var nStimuli = 6;
 
 /* THIS IS TO RANDOMIZE STIMS */
 var mStimArray = [
@@ -248,7 +266,8 @@ for(var j = 0; j < stims.length; j++){
 			context: prompts[0] + '_' + prompts[1],
 			condition: stims[j][i][0][0] + '_' + stims[j][i][0][1],
 			optimal_response: (stims[j][i][0][0] > stims[j][i][0][1]) ? 37 : 39,
-			stim_gender: stimGender
+			stim_gender: stimGender,
+			stimindex: i
 		}
 		var order2_stim = {}
 		order2_stim.image = "<div class = topbox><img src='" + stims[j][i][2] +
@@ -262,7 +281,8 @@ for(var j = 0; j < stims.length; j++){
 			context: prompts[1] + '_' + prompts[0],
 			condition: stims[j][i][0][1] + '_' + stims[j][i][0][0],
 			optimal_response: (stims[j][i][0][1] > stims[j][i][0][0]) ? 37 : 39,
-			stim_gender: stimGender
+			stim_gender: stimGender,
+			stimindex: i
 		}
 		firstPhaseStims.push(order1_stim);
 		firstPhaseStims.push(order1_stim); //no longer switching sides
@@ -271,7 +291,7 @@ for(var j = 0; j < stims.length; j++){
 
 var firstPhaseStimsComplete = jsPsych.randomization.repeat(firstPhaseStims, stimSetRepNum, true);
 var answers = genResponses(firstPhaseStimsComplete)
-var rewards = jsPsych.randomization.repeat([1, 5], FP_trials/2);	
+var rewards = genRewards(firstPhaseStimsComplete)
 var curr_data = ''
 
 /* This is to end the training while loop, if the subject has reached 6 training blocks */
@@ -504,7 +524,7 @@ var performance_criteria = {
 		} else {
 			firstPhaseStimsComplete = jsPsych.randomization.repeat(firstPhaseStims, stimSetRepNum, true);
 			answers = genResponses(firstPhaseStimsComplete)
-			rewards = jsPsych.randomization.repeat([1, 5], FP_trials/2);	
+			rewards = genRewards(firstPhaseStimsComplete)
 			return true
 		}
 	},
