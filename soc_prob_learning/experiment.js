@@ -383,6 +383,28 @@ var FP_block = {
 	timing_post_trial: 1000
 };
 
+var metacog_block = {
+	type: 'poldrack-survey-multi-choice',
+	data: {
+		trial_id: 'metacog',
+		exp_id: 'soc_prob_learning'
+	},
+	preamble: "Answer the following question, then click 'next.'",
+	pages: [["Do you know which face goes with which word?"]],
+	options: [[["1. I definitely don't know any", "2.", "3. I might know some", "4.", "5. I definitely know all of them"]]],
+	scale: [[{
+		"1. I definitely don't know any": 1, 
+		"2.": 2, 
+		"3. I might know some": 3, 
+		"4.": 4, 
+		"5. I definitely know all of them": 5
+	}]],
+	show_clickable_nav: true,
+	allow_backward: false,
+	horizontal: true
+};
+
+
 var break_block = {
 	type: 'poldrack-text',
 	data: {
@@ -395,7 +417,7 @@ var break_block = {
 };
 
 var break_node = {
-	timeline: [break_block],
+	timeline: [metacog_block, break_block],
 	conditional_function: function(){
 		if(training_count==8){
 			return false;

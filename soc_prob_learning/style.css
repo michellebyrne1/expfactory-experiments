@@ -60,12 +60,12 @@
 }
 .feedback-box{
   width:70vw;
-  height: 30vh;
+  height: 12vh;
   position:absolute;
-  top:31%;
+  top:39%;
   left:50%;
   margin-right:-50%;
-  transform: translate(-50%,20vw);
+  transform: translate(-50%,18vw);
 }
 
 
@@ -89,4 +89,10 @@ transform: translate(-50%,-50%);
 
 .responded {
   visibility: hidden;
+}
+
+#jspsych-poldrack-survey-multi-choice-form{
+  width:40vw;
+  margin-left:50%;
+  transform: translate(-50%,0%);
 }
