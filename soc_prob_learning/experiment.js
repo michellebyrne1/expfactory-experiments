@@ -227,6 +227,8 @@ var stimsMF = [
 	[['20','80'], 'soc', randomSocStimArray[1]]
 ];
 
+var instructionStims = jsPsych.randomization.repeat(stimsMF, 1);
+
 firstPhaseStims = [];
 stims=[stimsMF]; //dropping abstract stims for now
 /* THIS IS FOR FIRST PHASE STIMS,  randomized and counterbalanced*/
@@ -365,7 +367,8 @@ var instructions_block = {
 	},
 	pages: [
 		'<div class = bigtextbox><p class = block-text>In this experiment, you\'re going to see pictures of 6 different faces. Along with each picture, you\'ll see a pair of words, and we want you to try to guess which word goes with which picture.</p><p class = block-text>For 2 faces, you\'ll guess whether the person in the picture is <strong>popular</strong> or <strong>unpopular</strong>.</p><p class = block-text>For 2 other faces, you\'ll guess whether the person is <strong>dating</strong> someone or <strong>looking</strong> for someone to date.</p><p class = block-text>For the last 2 faces, you\'ll guess whether the person is <strong>hungry</strong> or <strong>thirsty</strong>.</p><p class = block-text>To make your guess, press the <strong>left arrow</strong> for the left answer or the <strong>right arrow</strong> for the right answer.</p></div>',
-	'<div class = bigtextbox><p class = block-text>The same word goes with the same picture most of the time, <em>but not always</em>. After each guess you\'ll see the number of points you earned. For example, if you see "5/5 points" below the picture, it means you were right and earned 5 points. But if you guess incorrectly, you won\'t get any points, so you\'ll just see the number of points you could have gotten. For example, "0/1 point" means you were wrong and got 0 out of 1 possible point.</p><p class = block-text>Try to guess correctly as often as you can to get the most points.</p><p class = block-text>Remember, press the <strong>left arrow</strong> for the left answer or the <strong>right arrow</strong> for the right answer.</p></div>'],
+	'<div class = bigtextbox><p class = block-text>The same word goes with the same picture most of the time, <em>but not always</em>. After each guess you\'ll see the number of points you earned. For example, if you see "5/5 points" below the picture, it means you were right and earned 5 points. But if you guess incorrectly, you won\'t get any points, so you\'ll just see the number of points you could have gotten. For example, "0/1 point" means you were wrong and got 0 out of 1 possible point.</p><p class = block-text>Try to guess correctly as often as you can to get the most points.</p><p class = block-text>Remember, press the <strong>left arrow</strong> for the left answer or the <strong>right arrow</strong> for the right answer.</p><p class=block-text><strong>Each point is worth a penny</strong>, so you can earn up to about $10</p></div>',
+	'<div class = bigtextbox><p class = block-text>These are the six faces you\'re going to see in the task. Look at them now so they\'re easier to recognize when you play the game:</p><p class = block-text-img><img src="'+ instructionStims[0][2]  +'" /><img src="'+ instructionStims[1][2]  +'" /><img src="'+ instructionStims[2][2]  +'" /><br /><img src="'+ instructionStims[3][2]  +'" /><img src="'+ instructionStims[4][2]  +'" /><img src="'+ instructionStims[5][2]  +'" /></p><p class = block-text>Remember, you\'re going to use the <strong>left</strong> and <strong>right</strong> arrow keys when the game starts.</p></div>'],
 	allow_keys: false,
 	show_clickable_nav: true,
 	timing_post_trial: 1000
@@ -398,7 +401,7 @@ var FP_block = {
 		trial_id: "first_phase_intro"
 	},
 	timing_response: 180000,
-	text: '<div class = centerbox><p class = center-block-text> We will now begin the game.  Press <strong>enter</strong> to begin. </p></div>',
+	text: '<div class = centerbox><p class = center-block-text> Please let the researcher know you have finished reading the instructions. </p></div>',
 	cont_key: [13],
 	timing_post_trial: 1000
 };

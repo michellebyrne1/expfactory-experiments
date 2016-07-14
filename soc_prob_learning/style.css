@@ -49,6 +49,14 @@
   margin-right:-50%;
   transform: translate(-50%,0%);
 }
+.block-text-img img{
+  display: inline;
+  height: 20vh;
+  position: relative;
+  top:auto;
+  left:auto;
+  transform:none;
+}
 .centerbox {
   width:35vw;
   height: 20vw;
