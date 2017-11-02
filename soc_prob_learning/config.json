@@ -5,6 +5,7 @@
         "run": [
                  "static/js/jspsych/jspsych.js",
                  "static/js/jspsych/plugins/jspsych-text.js",
+                 "static/js/jspsych/plugins/jspsych-call-function.js",
                  "static/js/jspsych/poldrack_plugins/jspsych-poldrack-text.js",
                  "static/js/jspsych/poldrack_plugins/jspsych-poldrack-instructions.js",
                  "static/js/jspsych/poldrack_plugins/jspsych-poldrack-categorize.js",
@@ -41,7 +42,8 @@
         "deployment_variables":{"jspsych_init":
                                         {"fullscreen": true,
                                         "display_element": "getDisplayElement",
-                                        "on_trial_finish": "addID('soc_prob_learning')"}
+                                        "on_trial_finish": "addID('soc_prob_learning')",
+                                        "on_finish" : "exitFullScreen"}
                        }  
    }
 ]

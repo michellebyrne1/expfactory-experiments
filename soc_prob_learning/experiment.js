@@ -1,6 +1,26 @@
 /* ***************************************** */
 /*          Define helper functions          */
 /* ***************************************** */
+function exitFullScreen() {
+    var isInFullScreen = (document.fullscreenElement && document.fullscreenElement !== null) ||
+        (document.webkitFullscreenElement && document.webkitFullscreenElement !== null) ||
+        (document.mozFullScreenElement && document.mozFullScreenElement !== null) ||
+        (document.msFullscreenElement && document.msFullscreenElement !== null);
+
+    var docElm = document.documentElement;
+    if (isInFullScreen) {
+        if (document.exitFullscreen) {
+            document.exitFullscreen();
+        } else if (document.webkitExitFullscreen) {
+            document.webkitExitFullscreen();
+        } else if (document.mozCancelFullScreen) {
+            document.mozCancelFullScreen();
+        } else if (document.msExitFullscreen) {
+            document.msExitFullscreen();
+        }
+    }
+}
+
 function saveDataOnServer(usepid){
 	var filedata = jsPsych.data.dataAsCSV();
 	var surveyTrials = jsPsych.data.getTrialsOfType('survey-text');
@@ -59,6 +79,10 @@ function evalAttentionChecks() {
 		check_percent = checks_passed / attention_check_trials.length
 	}
 	return check_percent
+}
+
+var getPIDDisplayText = function() {
+    return '<p class = block-text>Your ID number is ' +  jsPsych.data.getData()[0].participant_id +  '. Press <strong>enter</strong>' 
 }
 
 var getInstructFeedback = function() {
@@ -335,6 +359,19 @@ var post_task_block = {
 };
 //Set up PID entry
 //
+var set_pid_property_block = {
+    type: 'call-function',
+    func: function() { jsPsych.data.addProperties({participant_id: urlpid});}
+} 
+
+var display_pid_block = {
+    type: 'poldrack-text',
+    data: {
+        trial_id: "PID",
+    },
+    cont_key: [13],
+    text: getPIDDisplayText 
+}
 var enter_pid_block = {
 	type: 'survey-text',
 	data: {
@@ -342,7 +379,10 @@ var enter_pid_block = {
 	},
 	questions: ['<p class = center-block-text style = "font-size: 20px">Please enter the participant\'s ID number.</p>'],
 	rows: [3],
-	columns: [4]
+	columns: [4],
+    on_finish: function(data) {
+        jsPsych.data.addProperties({participant_id: JSON.parse(data.responses).Q0});
+    }
 }
 
 
@@ -570,7 +610,14 @@ var end_block = {
 
 /* create experiment definition array */
 var soc_prob_learning_experiment = [];
-soc_prob_learning_experiment.push(enter_pid_block); 
+var urlpid=jsPsych.data.getURLVariable('participant_id')
+if (urlpid == null){
+    soc_prob_learning_experiment.push(enter_pid_block); 
+    soc_prob_learning_experiment.push(display_pid_block);
+} else {
+    soc_prob_learning_experiment.push(set_pid_property_block);
+    soc_prob_learning_experiment.push(display_pid_block);
+}
 soc_prob_learning_experiment.push(instruction_node);
 soc_prob_learning_experiment.push(FP_block);
 soc_prob_learning_experiment.push(performance_criteria);
