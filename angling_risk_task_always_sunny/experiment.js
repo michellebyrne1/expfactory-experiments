@@ -35,11 +35,10 @@ function assessPerformance() {
 		}
 	}
 	//calculate average rt
-	var sum = 0
-	for (var j = 0; j < rt_array.length; j++) {
-		sum += rt_array[j]
-	}
-	var avg_rt = sum / rt_array.length || -1
+	var avg_rt = -1
+	if (rt_array.length !== 0) {
+		avg_rt = math.median(rt_array)
+	} 
   	var missed_percent = missed_count/experiment_data.length
   	credit_var = (missed_percent < 0.4 && avg_rt > 200)
   	if (credit_var === true) {
@@ -335,7 +334,7 @@ var performance_var = 0
 // task specific variables
 var exp_stage = 'practice'
 var num_practice_rounds = 2
-var num_rounds = 20
+var num_rounds = 30
 var red_fish_num = 0
 var total_fish_num = 0
 var start_fish_num = 0
@@ -509,10 +508,22 @@ var round_over_block = {
 		}
 		jsPsych.data.addDataToLastTrial({
 			exp_stage: exp_stage,
-			caught_blue: caught_blue
+			caught_blue: caught_blue,
+			weather: weather,
+			release: release
 		})
 	}
 };
+
+var update_performance_var_block = {
+	type: 'call-function',
+	data: {
+		trial_id: 'update_performance_var'
+	},
+	func: function() {
+		total_points += tournament_bank
+	}
+}
 
 var ask_fish_block = {
 	type: 'survey-text',
@@ -607,7 +618,7 @@ var start_test_block = {
 		trial_id: "test_intro"
 	},
 	timing_response: 180000,
-	text: '<div class = centerbox><p class = center-block-text>Done with practice! We will now start the test tournaments. There will be four tournaments, each with 20 rounds of fishing.</p><p class = center-block-text>Press <strong>enter</strong> to begin the test.</p></div>',
+	text: '<div class = centerbox><p class = center-block-text>Done with practice! We will now start the test tournaments. There will be four tournaments, each with 30 rounds of fishing.</p><p class = center-block-text>Press <strong>enter</strong> to begin the test.</p></div>',
 	cont_key: [13],
 	timing_post_trial: 1000,
 	on_finish: function() {
@@ -723,7 +734,6 @@ for (b = 0; b < blocks.length; b++) {
 			weather = data.weather
 			release = data.release
 			start_fish_num = data.start_fish_num
-			total_points += tournament_bank
 			tournament_bank = 0
 			round_num = 0
 		}
@@ -736,6 +746,7 @@ for (b = 0; b < blocks.length; b++) {
 	if ($.inArray(b, [0, 2]) != -1) {
 		angling_risk_task_always_sunny_experiment.push(attention_node)
 	}
+	angling_risk_task_always_sunny_experiment.push(update_performance_var_block)
 }
 angling_risk_task_always_sunny_experiment.push(post_task_block)
 angling_risk_task_always_sunny_experiment.push(end_block)

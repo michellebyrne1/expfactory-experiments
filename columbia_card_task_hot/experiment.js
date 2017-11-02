@@ -22,11 +22,10 @@ function assessPerformance() {
 		}
 	}
 	//calculate average rt
-	var sum = 0
-	for (var j = 0; j < rt_array.length; j++) {
-		sum += rt_array[j]
-	}
-	var avg_rt = sum / rt_array.length || -1
+	var avg_rt = -1
+	if (rt_array.length !== 0) {
+		avg_rt = math.median(rt_array)
+	} 
 	var missed_percent = missed_count/experiment_data.length
   	credit_var = (missed_percent < 0.4 && avg_rt > 200)
 	jsPsych.data.addDataToLastTrial({"credit_var": credit_var,
@@ -75,7 +74,7 @@ var getBoard = function(board_type) {
 var getText = function() {
 	return '<div class = centerbox><p class = block-text>Overall, you earned ' + totalPoints + ' points. These are the points used for your bonus from three randomly picked trials:  ' +
 		'<ul list-text><li>' + prize1 + '</li><li>' + prize2 + '</li><li>' + prize3 + '</li></ul>' +
-		'</p></div>'
+		'</p><p class = block-text>Press <strong>enter</strong> to continue.</p></div>'
 }
 
 var appendPayoutData = function(){
@@ -600,7 +599,8 @@ var end_block = {
 	},
 	text: '<div class = centerbox><p class = center-block-text>Finished with this task.</p><p class = center-block-text>Press <strong>enter</strong> to continue.</p></div>',
 	cont_key: [13],
-	timing_post_trial: 0
+	timing_post_trial: 0,
+  	on_finish: assessPerformance
 };
 
 var start_test_block = {
@@ -684,12 +684,12 @@ var test_node = {
 			roundOver = 0
 			roundPoints = 0
 			whichClickInRound = 0
+			whichRound = whichRound + 1
 			round_type = lossRounds.indexOf(whichRound)==-1 ? 'rigged_win' : 'rigged_loss'
 			if (round_type == 'rigged_loss') {
 				whichLossCards = [riggedLossCards.shift()]
 			}
 			lossClicked = false
-			whichRound = whichRound + 1
 			return false
 		} else {
 			return true
@@ -721,7 +721,6 @@ var payoutTrial = {
 		prize2 = randomRoundPointsArray.pop()
 		prize3 = randomRoundPointsArray.pop()
 		performance_var = prize1 + prize2 + prize3
-		jsPsych.data.addDataToLastTrial({"performance_var": performance_var})
 	}
 };
 

@@ -29,30 +29,32 @@ function assessPerformance() {
 	choice_counts[-1] = 0
 	choice_counts[32] = 0
 	for (var i = 0; i < experiment_data.length; i++) {
-		trial_count += 1
-		rt = experiment_data[i].rt
-		key = experiment_data[i].key_press
-		choice_counts[key] += 1
-		if (rt == -1) {
-			missed_count += 1
-		} else {
-			rt_array.push(rt)
+		if (experiment_data[i].possible_responses != 'none') {
+			trial_count += 1
+			rt = experiment_data[i].rt
+			key = experiment_data[i].key_press
+			choice_counts[key] += 1
+			if (rt == -1) {
+				missed_count += 1
+			} else {
+				rt_array.push(rt)
+			}
 		}
 	}
 	//calculate average rt
-	var sum = 0
-	for (var j = 0; j < rt_array.length; j++) {
-		sum += rt_array[j]
-	}
-	var avg_rt = sum / rt_array.length || -1
-		//calculate whether response distribution is okay
+	var avg_rt = -1
+	if (rt_array.length !== 0) {
+		avg_rt = math.median(rt_array)
+	} 
+	var missed_percent = missed_count/experiment_data.length
+	//calculate whether response distribution is okay
 	var responses_ok = true
 	Object.keys(choice_counts).forEach(function(key, index) {
 		if (choice_counts[key] > trial_count * 0.85) {
 			responses_ok = false
 		}
 	})
-	credit_var = (avg_rt > 200) && responses_ok
+	credit_var = (missed_percent < 0.4 && (avg_rt > 200) && responses_ok)
 	jsPsych.data.addDataToLastTrial({"credit_var": credit_var})
 }
 
@@ -65,6 +67,7 @@ var randomDraw = function(lst) {
 	var index = Math.floor(Math.random() * (lst.length))
 	return lst[index]
 };
+
 
 //Calculates whether the last trial was correct and records the accuracy in data object
 var record_acc = function(data) {
@@ -89,7 +92,6 @@ var record_acc = function(data) {
 		stim: curr_stim,
 		trial_num: current_trial
 	})
-	console.log(block_acc)
 	current_trial = current_trial + 1
 	block_trial = block_trial + 1
 };
@@ -162,6 +164,7 @@ var credit_var = true //default to true
 var letters = 'bBdDgGtTvV'.split("")
 var num_blocks = 20 // number of adaptive blocks
 var base_num_trials = 20 // total num_trials = base + load 
+var control_num_trials = 42
 var control_before = Math.round(Math.random()) //0 control comes before test, 1, after
 var block_acc = 0 // record block accuracy to determine next blocks delay
 var delay = 2 // starting delay
@@ -307,7 +310,8 @@ var start_control_block = {
 	timing_response: 180000,
 	timing_post_trial: 2000,
 	on_finish: function() {
-		target_trials = jsPsych.randomization.repeat(['target','0', '0'], Math.round(base_num_trials/3)).slice(0,base_num_trials)
+		target_trials = jsPsych.randomization.repeat(['target','0', '0'], Math.round(control_num_trials/3)).slice(0,control_num_trials)
+		target = 't'
 	}
 };
 
@@ -337,6 +341,7 @@ var start_adaptive_block = {
 		}
 		trials_to_add = jsPsych.randomization.shuffle(trials_to_add)
 		target_trials = target_trials.concat(trials_to_add)
+		block_acc = 0;
 	}
 };
 
@@ -393,7 +398,7 @@ for (var i = 0; i < (base_num_trials + 1); i++) {
 
 //Define control (0-back) block
 var control_trials = []
-for (var i = 0; i < base_num_trials*2; i++) {
+for (var i = 0; i < control_num_trials; i++) {
 	var control_block = {
 		type: 'poldrack-single-stim',
 		is_html: true,
@@ -437,8 +442,7 @@ if (control_before === 0) {
 	adaptive_n_back_experiment.push(start_control_block)
 	adaptive_n_back_experiment = adaptive_n_back_experiment.concat(control_trials)
 }
-
-for (var b = 0; b < num_blocks; b++) {
+for (var b = 0; b < num_blocks; b++) { 
 	adaptive_n_back_experiment.push(start_adaptive_block)
 	adaptive_n_back_experiment.push(adaptive_test_node)
 	if ($.inArray(b, [4, 7, 15]) != -1) {

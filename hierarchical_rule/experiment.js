@@ -31,22 +31,23 @@ function assessPerformance() {
     choice_counts[choices[k]] = 0
   }
 	for (var i = 0; i < experiment_data.length; i++) {
-		trial_count += 1
-		rt = experiment_data[i].rt
-		key = experiment_data[i].key_press
-		choice_counts[key] += 1
-		if (rt == -1) {
-			missed_count += 1
-		} else {
-			rt_array.push(rt)
-		}
+    if (experiment_data[i].possible_responses != 'none') {
+  		trial_count += 1
+  		rt = experiment_data[i].rt
+  		key = experiment_data[i].key_press
+  		choice_counts[key] += 1
+  		if (rt == -1) {
+  			missed_count += 1
+  		} else {
+  			rt_array.push(rt)
+  		}
+    }
 	}
 	//calculate average rt
-	var sum = 0
-	for (var j = 0; j < rt_array.length; j++) {
-		sum += rt_array[j]
-	}
-	var avg_rt = sum / rt_array.length || -1
+	var avg_rt = -1
+	if (rt_array.length !== 0) {
+		avg_rt = math.median(rt_array)
+	} 
 	//calculate whether response distribution is okay
 	var responses_ok = true
 	Object.keys(choice_counts).forEach(function(key, index) {
@@ -108,6 +109,14 @@ var getInstructFeedback = function() {
     feedback_instruct_text + '</p></div>'
 }
 
+var getRestText = function() {
+  return '<div class = centerbox><p class = center-block-text>Take a break! You have earned ' + total_correct + ' points so far.</p><p class = center-block-text>Press <strong>enter</strong> to continue.</p></div>'
+}
+
+var getEndText = function() {
+  return '<div class = centerbox><p class = "center-block-text">Thanks for completing this task! You earned ' + total_correct + ' points.</p><p class = "center-block-text">Press <strong>enter</strong> to begin.</p></div>'
+}
+
 /* ************************************ */
 /* Define experimental variables */
 /* ************************************ */
@@ -155,6 +164,7 @@ for (var c = 0; c < colors.length; c++) {
             orientation: orientation_data[orientations[o] - 1],
             border: color_data[colors[c] - 1],
             exp_stage: "flat_test",
+            trial_id: "flat_stim",
             correct_response: random_correct.pop()
           }
         })
@@ -171,6 +181,7 @@ for (var c = 0; c < colors.length; c++) {
             stim: stims[s + (stims.length / 2)],
             orientation: orientation_data[orientations[o] - 1],
             exp_stage: "hierarchical_test",
+            trial_id: "hierarchical_stim",
             border: color_data[colors[c] - 1],
             correct_response: correct_response
           }
@@ -256,7 +267,7 @@ var instruct_text_array = ['<div class = centerbox><p class = "block-text">In th
 for (var i = 0; i < instruct_stims.length; i++) {
   instruct_text_array.push(instruct_stims[i] + '<div class = instructionBox><p class = center-block-text>Please familiarize yourself with the stimulus shown on these pages.</p></div>')
 }
-instruct_text_array.push('<div class = centerbox><p class = "block-text">Make sure you are familiar with the stimuli you just saw. Remember, respond to the stimuli by pressing J, K, or L. You will get a bonus based on your performance so try your best!</p><p class = "block-text">The experiment will start right after you end the instructions.</p></div>')
+instruct_text_array.push('<div class = centerbox><p class = "block-text">Make sure you are familiar with the stimuli you just saw. Remember, respond to the stimuli by pressing J, K, or L. You will get a bonus based on your performance so try your best!</p><p class = "block-text">The experiment will start right after you end the instructions. There will be 5 rest breaks.</p></div>')
 
 var instructions_block = {
   type: 'poldrack-instructions',
@@ -294,7 +305,7 @@ var instruct_text_array2 = ['<div class = centerbox><p class = "block-text">You 
 for (var i = 0; i < instruct_stims2.length; i++) {
   instruct_text_array2.push(instruct_stims2[i] + '<div class = instructionBox><p class = center-block-text>Please familiarize yourself with the stimulus shown on this page.</p></div>')
 }
-instruct_text_array2.push('<div class = centerbox><p class = "block-text">Make sure you are familiar with the stimuli you just saw. Remember, respond to the stimuli by pressing J, K, or L. You will get a bonus based on your performance so try your best!</p><p class = "block-text">The experiment will start right after you end the instructions.</p></div>')
+instruct_text_array2.push('<div class = centerbox><p class = "block-text">Make sure you are familiar with the stimuli you just saw. Remember, respond to the stimuli by pressing J, K, or L. You will get a bonus based on your performance so try your best!</p><p class = "block-text">The experiment will start right after you end the instructions. There will be 5 rest breaks.</p></div>')
 
 var instructions_block2 = {
   type: 'poldrack-instructions',
@@ -313,7 +324,7 @@ var end_block = {
     trial_id: "end",
     exp_id: 'hierarchical_rule'
   },
-  text: '<div class = centerbox><p class = "center-block-text">Thanks for completing this task!</p><p class = "center-block-text">Press <strong>enter</strong> to begin.</p></div>',
+  text: getEndText,
   cont_key: [13],
   timing_post_trial: 0,
   on_finish: assessPerformance
@@ -378,8 +389,6 @@ var flat_stim_block = {
   		correct = true
   	}
     jsPsych.data.addDataToLastTrial({
-      trial_id: "flat_stim",
-      exp_stage: "test",
       correct: correct,
       trial_num: current_trial
     })
@@ -402,17 +411,39 @@ var hierarchical_stim_block = {
   		correct = true
   	}
     jsPsych.data.addDataToLastTrial({
-      trial_id: "hierarchical_stim",
-      exp_stage: "test",
       correct: correct,
       trial_num: current_trial
     })
   }
 }
 
+//conditional rest every 90 trials
+var rest_block = {
+  type: 'poldrack-text',
+  data: {
+    trial_id: "rest"
+  },
+  timing_response: 180000,
+  text: getRestText,
+  cont_key: [13],
+  timing_post_trial: 1000
+};
+
+var rest_node = {
+    timeline: [rest_block],
+    conditional_function: function(){
+        if ($.inArray(current_trial,[59,119,179,239,299]) !== -1){
+            return true;
+        } else {
+            return false;
+        }
+    }
+}
+
+
 // loop nodes instead of creating a huge array with three blocks for all trials
 var flat_loop_node = {
-  timeline: [fixation_block, flat_stim_block, feedback_block],
+  timeline: [fixation_block, flat_stim_block, feedback_block, rest_node],
   loop_function: function(data) {
     if (flat_stims.stimulus.length > 0) {
       current_trial += 1
@@ -425,7 +456,7 @@ var flat_loop_node = {
 }
 
 var hierarchical_loop_node = {
-  timeline: [fixation_block, hierarchical_stim_block, feedback_block],
+  timeline: [fixation_block, hierarchical_stim_block, feedback_block, rest_node],
   loop_function: function(data) {
     if (hierarchical_stims.stimulus.length > 0) {
       current_trial += 1

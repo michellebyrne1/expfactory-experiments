@@ -2,7 +2,8 @@
 /* Define helper functions */
 /* ************************************ */
 function assessPerformance() {
-	var experiment_data = jsPsych.data.getTrialsOfType('poldrack-categorize')
+	var experiment_data = jsPsych.data.getTrialsOfType('poldrack-single-stim')
+	experiment_data = experiment_data.concat(jsPsych.data.getTrialsOfType('poldrack-categorize'))
 	var missed_count = 0
 	var trial_count = 0
 	var rt_array = []
@@ -14,24 +15,24 @@ function assessPerformance() {
 		choice_counts[choices[k]] = 0
 	}
 	for (var i = 0; i < experiment_data.length; i++) {
-		trial_count += 1
-		rt = experiment_data[i].rt
-		key = experiment_data[i].key_press
-		choice_counts[key] += 1
-		if (rt == -1) {
-			missed_count += 1
-		} else {
-			rt_array.push(rt)
+		if (experiment_data[i].possible_responses != 'none') {
+			trial_count += 1
+			rt = experiment_data[i].rt
+			key = experiment_data[i].key_press
+			choice_counts[key] += 1
+			if (rt == -1) {
+				missed_count += 1
+			} else {
+				rt_array.push(rt)
+			}
 		}
-
 	}
 	//calculate average rt
-	var sum = 0
-	for (var j = 0; j < rt_array.length; j++) {
-		sum += rt_array[j]
-	}
-	var avg_rt = sum / rt_array.length || -1
-		//calculate whether response distribution is okay
+	var avg_rt = -1
+	if (rt_array.length !== 0) {
+		avg_rt = math.median(rt_array)
+	} 
+	//calculate whether response distribution is okay
 	var responses_ok = true
 	Object.keys(choice_counts).forEach(function(key, index) {
 		if (choice_counts[key] > trial_count * 0.85) {
@@ -60,8 +61,10 @@ var getStim = function() {
 	var distractor_i = 0
 	if (trial_type[0] == 'S') {
 		target_i = probe_i
+		currData.correct_response = 77
 	} else {
 		target_i = randomDraw([1,2,3,4,5,6,7,8,9,10].filter(function(y) {return y != probe_i}))
+		currData.correct_response = 90
 	}
 	if (trial_type[1] == 'S') {
 		distractor_i = target_i
@@ -119,7 +122,7 @@ for (var i = 1; i<11; i++) {
 		shape_stim.push(path + i + '_' + colors[c] + '.png')
 	}
 }
-jsPsych.pluginAPI.preloadImages(shape_stim)
+jsPsych.pluginAPI.preloadImages(shape_stim.concat(path+'mask.png'))
 
 var practice_len = 21
 // Trial types denoted by three letters for the relationship between:
@@ -221,6 +224,7 @@ var start_test_block = {
 	cont_key: [13],
 	timing_post_trial: 1000,
 	on_finish: function() {
+		current_trial = 0
 		exp_stage = 'test'
 		trial_types = jsPsych.randomization.repeat(['SSS', 'SDD', 'SNN', 'DSD', 'DDD', 'DDS', 'DNN'],exp_len/7)
 	}

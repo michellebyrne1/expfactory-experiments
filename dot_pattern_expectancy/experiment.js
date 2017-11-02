@@ -44,15 +44,14 @@ function assessPerformance() {
 		}
 	}
 	//calculate average rt
-	var sum = 0
-	for (var j = 0; j < rt_array.length; j++) {
-		sum += rt_array[j]
-	}
-	var avg_rt = sum / rt_array.length || -1
-		//calculate whether response distribution is okay
+	var avg_rt = -1
+	if (rt_array.length !== 0) {
+		avg_rt = math.median(rt_array)
+	} 
+	//calculate whether response distribution is okay
 	var responses_ok = true
 	Object.keys(choice_counts).forEach(function(key, index) {
-		if (choice_counts[key] > trial_count * 0.85) {
+		if (choice_counts[key] > trial_count * 0.9) {
 			responses_ok = false
 		}
 	})
@@ -80,20 +79,20 @@ var getFeedback = function() {
   var condition = curr_data.condition
   var response = curr_data.key_press
   var feedback_text = ''
-  var correct = -1
-  if (response == -1) {
-    feedback_text =  '<div class = centerbox><div class = center-text>Respond Faster!</p></div>'
-  } else if (condition == "AX" && response == 37) {
+  var correct = false
+  var correct_response = choices[1]
+  if (condition == "AX") {
+    correct_response = choices[0]
+  }
+  if (response == correct_response) {
+    correct = true
     feedback_text =  '<div class = centerbox><div style="color:green"; class = center-text>Correct!</div></div>'
-    correct = true
-  } else if (condition != "AX" && response == 40) {
-    feedback_text = '<div class = centerbox><div style="color:green"; class = center-text>Correct!</div></div>'
-    correct = true
+  } else if (response == -1) {
+    feedback_text =  '<div class = centerbox><div class = center-text>Respond Faster!</p></div>'
   } else {
     feedback_text = '<div class = centerbox><div style="color:red"; class = center-text>Incorrect</div></div>'
-    correct = false
   }
-  jsPsych.data.addDataToLastTrial({'correct': correct})
+  jsPsych.data.addDataToLastTrial({'correct': correct, 'correct_response': correct_response})
   return feedback_text
 }
 
@@ -286,7 +285,7 @@ var fixation_block = {
   type: 'poldrack-single-stim',
   stimulus: '<div class = centerbox><div class = fixation>+</div></div>',
   is_html: true,
-  choices: choices,
+  choices: 'none',
   data: {
     trial_id: "fixation",
   },

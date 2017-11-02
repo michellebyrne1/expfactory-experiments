@@ -46,11 +46,10 @@ function assessPerformance() {
 		}
 	}
 	//calculate average rt
-	var sum = 0
-	for (var j = 0; j < rt_array.length; j++) {
-		sum += rt_array[j]
-	}
-	var avg_rt = sum / rt_array.length || -1
+	var avg_rt = -1
+	if (rt_array.length !== 0) {
+		avg_rt = math.median(rt_array)
+	} 
 		//calculate whether response distribution is okay
 	var responses_ok = true
 	Object.keys(choice_counts).forEach(function(key, index) {
@@ -71,12 +70,7 @@ var getInstructFeedback = function() {
 
 var post_trial_gap = function() {
 	var curr_trial = jsPsych.progress().current_trial_global
-	return 3500 - jsPsych.data.getData()[curr_trial - 1].rt - jsPsych.data.getData()[curr_trial - 4].block_duration
-}
-
-var get_RT = function() {
-	var curr_trial = jsPsych.progress().current_trial_global
-	return jsPsych.data.getData()[curr_trial].rt
+	return 3500 - jsPsych.data.getData()[curr_trial - 1].block_duration - jsPsych.data.getData()[curr_trial - 4].block_duration
 }
 
 var getInstructFeedback = function() {

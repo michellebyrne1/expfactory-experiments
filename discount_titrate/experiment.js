@@ -31,32 +31,28 @@ function assessPerformance() {
 		choice_counts[choices[k]] = 0
 	}
 	for (var i = 0; i < experiment_data.length; i++) {
-		trial_count += 1
-		rt = experiment_data[i].rt
-		key = experiment_data[i].key_press
-		choice_counts[key] += 1
-		if (rt == -1) {
-			missed_count += 1
-		} else {
-			rt_array.push(rt)
+		if (experiment_data[i].possible_responses != 'none') {
+			trial_count += 1
+			rt = experiment_data[i].rt
+			key = experiment_data[i].key_press
+			choice_counts[key] += 1
+			if (rt == -1) {
+				missed_count += 1
+			} else {
+				rt_array.push(rt)
+			}
 		}
 	}
 	//calculate average rt
-	var sum = 0
-	for (var j = 0; j < rt_array.length; j++) {
-		sum += rt_array[j]
-	}
-	var avg_rt = sum / rt_array.length || -1
-		//calculate whether response distribution is okay
-	var responses_ok = true
-	Object.keys(choice_counts).forEach(function(key, index) {
-		if (choice_counts[key] > trial_count * 0.85) {
-			responses_ok = false
-		}
-	})
+	var avg_rt = -1
+	if (rt_array.length !== 0) {
+		avg_rt = math.median(rt_array)
+	} 
 	var missed_percent = missed_count/trial_count
-	credit_var = (missed_percent < 0.4 && avg_rt > 200 && responses_ok)
-	jsPsych.data.addDataToLastTrial({"credit_var": credit_var})
+	credit_var = (missed_percent < 0.4 && avg_rt > 200)
+	var bonus = randomDraw(bonus_list)
+	jsPsych.data.addDataToLastTrial({"credit_var": credit_var,
+									"performance_var": JSON.stringify(bonus)})
 }
 
 var getInstructFeedback = function() {
@@ -107,6 +103,11 @@ function fillArray(value, len) {
 }
 
 
+var randomDraw = function(lst) {
+  var index = Math.floor(Math.random() * (lst.length))
+  return lst[index]
+}
+
 /* ************************************ */
 /* Define experimental variables */
 /* ************************************ */
@@ -118,6 +119,7 @@ var instructTimeThresh = 0 ///in seconds
 var credit_var = true
 
 // task specific variables
+var bonus_list = []
 var choices = [80, 81]
 //First generate smaller amounts (mean = 20, sd = 10, clipped at 5 and 40)
 var small_amts = [];
@@ -287,18 +289,24 @@ var practice_block = {
 	choices: choices,
 	response_ends_trial: true,
 	on_finish: function(data) {
-		whichKey = data.key_press
+		var whichKey = data.key_press
+		var chosen_amount = 0
+		var chosen_delay = 0
+		var choice = ''
 		if (whichKey == 81) {
 			chosen_amount = data.smaller_amount
 			chosen_delay = data.sooner_delay
+			choice = 'smaller_sooner'
 		} else if (whichKey == 80) {
 			chosen_amount = data.larger_amount
 			chosen_delay = data.later_delay
+			choice = 'larger_later'
 		}
 
 		jsPsych.data.addDataToLastTrial({
 			chosen_amount: chosen_amount,
 			chosen_delay: chosen_delay,
+			choice: choice
 		})
 	}
 };
@@ -322,18 +330,24 @@ var test_block = {
 	randomize_order: true,
 	response_ends_trial: true,
 	on_finish: function(data) {
-		whichKey = data.key_press
+		var whichKey = data.key_press
+		var chosen_amount = 0
+		var chosen_delay = 0
+		var choice = ''
 		if (whichKey == 81) {
 			chosen_amount = data.smaller_amount
 			chosen_delay = data.sooner_delay
+			choice = 'smaller_sooner'
 		} else if (whichKey == 80) {
 			chosen_amount = data.larger_amount
 			chosen_delay = data.later_delay
+			choice = 'larger_later'
 		}
-
+		bonus_list.push({'amount': chosen_amount, 'delay': chosen_delay})
 		jsPsych.data.addDataToLastTrial({
 			chosen_amount: chosen_amount,
 			chosen_delay: chosen_delay,
+			choice: choice
 		})
 	}
 };

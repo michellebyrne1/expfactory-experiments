@@ -30,23 +30,23 @@ function assessPerformance() {
 		choice_counts[choices[k]] = 0
 	}
 	for (var i = 0; i < experiment_data.length; i++) {
-		trial_count += 1
-		rt = experiment_data[i].rt
-		key = experiment_data[i].key_press
-		choice_counts[key] += 1
-		if (rt == -1) {
-			missed_count += 1
-		} else {
-			rt_array.push(rt)
-		}
-
+    if (experiment_data[i].possible_responses != 'none') {
+    		trial_count += 1
+    		rt = experiment_data[i].rt
+    		key = experiment_data[i].key_press
+    		choice_counts[key] += 1
+    		if (rt == -1) {
+    			missed_count += 1
+    		} else {
+    			rt_array.push(rt)
+    		}
+    }
 	}
 	//calculate average rt
-	var sum = 0
-	for (var j = 0; j < rt_array.length; j++) {
-		sum += rt_array[j]
-	}
-	var avg_rt = sum / rt_array.length || -1
+  var avg_rt = -1
+  if (rt_array.length !== 0) {
+    avg_rt = math.median(rt_array)
+  } 
 		//calculate whether response distribution is okay
 	var responses_ok = true
 	Object.keys(choice_counts).forEach(function(key, index) {
@@ -109,7 +109,7 @@ var test_stimuli = [{
     correct_response: correct_responses[0][1],
     stim_side: 'left',
     stim_color: 'red', 
-    condition: 'congruent'
+    condition: correct_responses[0][1] == 37 ? 'congruent' : 'incongruent'
   },
   key_answer: correct_responses[0][1]
 }, {
@@ -118,25 +118,25 @@ var test_stimuli = [{
     correct_response: correct_responses[0][1],
     stim_side: 'right',
     stim_color: 'red', 
-    condition: 'incongruent'
+    condition: correct_responses[0][1] == 37 ? 'incongruent' : 'congruent'
   },
   key_answer: correct_responses[0][1]
 }, {
-  stimulus: '<div class = simon_leftbox><div class = simon_left id = stim2></div></div>',
+  stimulus: '<div class = centerbox><div class = simon_left id = stim2></div></div>',
   data: {
     correct_response: correct_responses[1][1],
     stim_side: 'left',
     stim_color: 'blue', 
-    condition: 'incongruent'
+    condition: correct_responses[0][1] == 37 ? 'incongruent' : 'congruent'
   },
   key_answer: correct_responses[1][1]
 }, {
-  stimulus: '<div class = simon_rightbox><div class = simon_right id = stim2></div></div>',
+  stimulus: '<div class = centerbox><div class = simon_right id = stim2></div></div>',
   data: {
     correct_response: correct_responses[1][1],
     stim_side: 'right',
     stim_color: 'blue', 
-    condition: 'congruent'
+    condition: correct_responses[0][1] == 37 ? 'congruent' : 'incongruent'
   },
   key_answer: correct_responses[1][1]
 }];
@@ -198,9 +198,8 @@ var instructions_block = {
     trial_id: "instruction"
   },
   pages: [
-    '<div class = centerbox><p class = block-text>On each trial of this experiment a red or blue box will appear. If you see a red box, press the ' +
-    correct_responses[0][0] + '. If you see a blue box, press the ' + correct_responses[1][0] +
-    '.</p><p class = block-text>We will start with practice where you will get feedback about whether you responded correctly. We will begin after you end the instructions.</p></div>',
+    '<div class = centerbox><p class = block-text>On each trial of this experiment a red or blue box will appear. If you see a <font color="red">red</font> box, press the ' +
+    correct_responses[0][0] + '. If you see a <font color="blue">blue</font> box, press the ' + correct_responses[1][0] + '.</p><p class = block-text>We will start with practice where you will get feedback about whether you responded correctly. We will begin after you end the instructions.</p></div>',
   ],
   allow_keys: false,
   show_clickable_nav: true,
@@ -248,7 +247,7 @@ var start_test_block = {
   data: {
     trial_id: "test_intro"
   },
-  text: '<div class = centerbox><p class = center-block-text>Starting test. You will no longer get feedback after your responses. Press <strong>enter</strong> to begin.</p></div>',
+  text: '<div class = centerbox><p class = center-block-text>Starting test. You will no longer get feedback after your responses. Remember, if you see a <font color="red">red</font> box, press the ' + correct_responses[0][0] + '. If you see a <font color="blue">blue</font> box, press the ' + correct_responses[1][0] + '.</p><p class = center-block-text>Press <strong>enter</strong> to begin.</p></div>',
   cont_key: [13],
   timing_post_trial: 1000,
   on_finish: function() {
@@ -268,7 +267,7 @@ var practice_block = {
   },
   correct_text: '<div class = centerbox><div style="color:green"; class = center-text>Correct!</div></div>',
   incorrect_text: '<div class = centerbox><div style="color:red"; class = center-text>Incorrect</div></div>',
-  timeout_message: '<div class = centerbox><div class = center-text>Response faster!</div></div>',
+  timeout_message: '<div class = centerbox><div class = center-text>Respond faster!</div></div>',
   choices: choices,
   timing_response: 2000,
   timing_stim: 2000,
