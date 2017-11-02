@@ -446,6 +446,17 @@ var FP_block = {
 	timing_post_trial: 1000
 };
 
+var get_ready_block = {
+	type: 'poldrack-text',
+	data: {
+		trial_id: "get_ready_block"
+	},
+	timing_response: 180000,
+	text: '<div class = centerbox><p class = center-block-text>Ready to get started? Place your fingers on the left and right arrow keys, and then press <strong>enter</strong> to continue. Don\'t worry if you miss the first face&mdash;just start responding as quickly as you can.</p></div>',
+	cont_key: [13],
+	timing_post_trial: 1000
+};
+
 var metacog_block = {
 	type: 'poldrack-survey-multi-choice',
 	data: {
@@ -608,6 +619,29 @@ var end_block = {
 	}
 };
 
+var end_block_to_qualtrics = {
+	type: 'poldrack-text',
+	data: {
+		trial_id: "end",
+		exp_id: 'soc_prob_learning'
+	},
+	timing_response: 180000,
+	text: function() {
+		return '<div class = centerbox><p class = center-block-text>Finished with this task! You earned a total of <strong>' + summarizePoints() + '</strong> points! Remember to tell the researcher how many points you earned.</p><p class = center-block-text>Press <strong>enter</strong> to continue.</p></div>'
+	},
+	cont_key: [13],
+	on_finish: function(data) {
+		assessPerformance(data);
+		var total_points = summarizePoints();
+		jsPsych.data.addDataToLastTrial({
+			'total_points' : total_points
+		})
+		if (save_data_to_server == true){
+			usepid=true;
+			saveDataOnServer(usepid); 
+		}
+	}
+};
 /* create experiment definition array */
 var soc_prob_learning_experiment = [];
 var urlpid=jsPsych.data.getURLVariable('participant_id')
@@ -619,8 +653,16 @@ if (urlpid == null){
     soc_prob_learning_experiment.push(display_pid_block);
 }
 soc_prob_learning_experiment.push(instruction_node);
-soc_prob_learning_experiment.push(FP_block);
+if (urlpid == null){
+    soc_prob_learning_experiment.push(FP_block);
+} else {
+    soc_prob_learning_experiment.push(get_ready_block);
+}
 soc_prob_learning_experiment.push(performance_criteria);
 soc_prob_learning_experiment.push(attention_node);
 soc_prob_learning_experiment.push(post_task_block);
-soc_prob_learning_experiment.push(end_block);
+if (urlpid == null){
+    soc_prob_learning_experiment.push(end_block);
+} else {
+    soc_prob_learning_experiment.push(end_block_to_qualtrics);
+}
