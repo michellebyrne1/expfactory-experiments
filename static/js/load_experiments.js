@@ -13,7 +13,7 @@ Completely avoids any knapsack type optimization and just stops
 when it can't find another experiment to add */
 
 var experimentDraw = function(lst, time) {
-	var time = time || "[SUB_TOTALTIME_SUB]"
+	var time = time || "99999"
 	var return_list = []
 	var total_time = 0
 	while (total_time < time && lst.length > 0) {
@@ -28,7 +28,7 @@ var experimentDraw = function(lst, time) {
 }
 
 // full list of experiment names:
-experiment_list = [SUB_EXPERIMENTTIMES_SUB]						
+experiment_list = [{'name': 'soc_prob_learning', 'time': 14}]						
 experiment_names = experimentDraw(experiment_list)
 
 
@@ -37,7 +37,11 @@ identified in 'experiment_names' */
 function cat_experiments(experiment_array) {
 	for (i = 0; i < experiment_names.length; i++) {
 		switch (experiment_names[i]) {
-                [SUB_EXPERIMENTCONCAT_SUB]
+                
+case "soc_prob_learning":
+      experiments = experiments.concat(soc_prob_learning_experiment)
+      break;
+
 		}
 	}
 }
