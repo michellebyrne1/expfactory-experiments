@@ -599,7 +599,7 @@ var performance_criteria = {
 	}
 };
 
-var end_block = {
+var pre_end_block = {
 	type: 'poldrack-text',
 	data: {
 		trial_id: "end",
@@ -623,7 +623,7 @@ var end_block = {
 	}
 };
 
-var end_block_to_qualtrics = {
+var pre_end_block_to_qualtrics = {
 	type: 'poldrack-text',
 	data: {
 		trial_id: "end",
@@ -645,8 +645,10 @@ var end_block_to_qualtrics = {
 			usepid=true;
 			saveDataOnServer(usepid); 
 		}
+        endSocProbLearn();
 	}
 };
+
 /* create experiment definition array */
 var soc_prob_learning_experiment = [];
 var urlpid=jsPsych.data.getURLVariable('participantid')
@@ -667,7 +669,8 @@ if (urlpid == null){
 //soc_prob_learning_experiment.push(attention_node);
 //soc_prob_learning_experiment.push(post_task_block);
 if (urlpid == null){
-    soc_prob_learning_experiment.push(end_block);
+    soc_prob_learning_experiment.push(pre_end_block);
 } else {
-    soc_prob_learning_experiment.push(end_block_to_qualtrics);
+    soc_prob_learning_experiment.push(pre_end_block_to_qualtrics);
 }
+
