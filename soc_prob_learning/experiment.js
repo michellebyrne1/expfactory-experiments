@@ -654,10 +654,10 @@ var soc_prob_learning_experiment = [];
 var urlpid=jsPsych.data.getURLVariable('participantid')
 if (urlpid == null){
     soc_prob_learning_experiment.push(enter_pid_block); 
-    soc_prob_learning_experiment.push(display_pid_block);
+//    soc_prob_learning_experiment.push(display_pid_block);
 } else {
     soc_prob_learning_experiment.push(set_pid_property_block);
-    soc_prob_learning_experiment.push(display_pid_block);
+//    soc_prob_learning_experiment.push(display_pid_block);
 }
 soc_prob_learning_experiment.push(instruction_node);
 if (urlpid == null){
@@ -665,9 +665,9 @@ if (urlpid == null){
 } else {
     soc_prob_learning_experiment.push(get_ready_block);
 }
-//soc_prob_learning_experiment.push(performance_criteria);
-//soc_prob_learning_experiment.push(attention_node);
-//soc_prob_learning_experiment.push(post_task_block);
+soc_prob_learning_experiment.push(performance_criteria);
+soc_prob_learning_experiment.push(attention_node);
+soc_prob_learning_experiment.push(post_task_block);
 if (urlpid == null){
     soc_prob_learning_experiment.push(pre_end_block);
 } else {
