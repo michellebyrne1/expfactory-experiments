@@ -273,8 +273,8 @@ for(var j = 0; j < stims.length; j++){
 				prompts[1] = 'Looking';
 				break;
 			case 'soc':
-				prompts[0] = 'Hungry';
-				prompts[1] = 'Thirsty';
+				prompts[0] = 'Neutral1';
+				prompts[1] = 'Neutral2';
 				break;
 			case 'abstract':
 				prompts[0] = 'Sunny';
