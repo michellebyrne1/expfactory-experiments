@@ -287,7 +287,7 @@ for(var j = 0; j < stims.length; j++){
 			"'></img></div><div class = decision-left>" + prompts[0] + 
 			"</div><div class = decision-right>" + prompts[1] + 
 			"</div>";
-		parsedFilename = stims[j][i][2].match("/([mf])_f42887_e_[0-9][0-9][0-9]\.png");
+		parsedFilename = stims[j][i][2].match("/([mf]).*?[0-9]\.jpg");	
 		stimGender = parsedFilename[1];
 		order1_stim.data = {
 			trial_id: 'stim',
