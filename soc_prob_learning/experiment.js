@@ -265,16 +265,16 @@ for(var j = 0; j < stims.length; j++){
 		var prompts = []
 		switch(stims[j][i][1]){
 			case 'status':
-				prompts[0] = 'Popular';
-				prompts[1] = 'Not popular';
+				prompts[0] = 'Is popular';
+				prompts[1] = 'Is wealthy';
 				break;
 			case 'mateseek':
-				prompts[0] = 'Flirty';
-				prompts[1] = 'Not flirty';
+				prompts[0] = 'Is flirty';
+				prompts[1] = 'Is single';
 				break;
 			case 'soc':
-				prompts[0] = 'Has siblings';
-				prompts[1] = 'Doesn\'t have siblings';
+				prompts[0] = 'Likes swimming';
+				prompts[1] = 'Has siblings';
 				break;
 			case 'abstract':
 				prompts[0] = 'Sunny';
@@ -410,11 +410,11 @@ var instructions_block = {
 		trial_id: "instruction"
 	},
 	pages: [
-		'<div class = bigtextbox><p class = block-text>In this experiment, you\'re going to see pictures of 6 different faces. Along with each picture, you\'ll see a pair of words, and we want you to try to guess which word goes with which picture.</p><p class = block-text>For 2 faces, you\'ll guess whether the person in the picture is <strong>popular</strong> or <strong> not popular</strong>.</p><p class = block-text>For 2 other faces, you\'ll guess whether the person is <strong>flirty</strong> or <strong>not flirty</strong>.</p><p class = block-text>For the last 2 faces, you\'ll guess whether the person <strong>has siblings</strong> or <strong>doesn\'t have siblings</strong>.</p></div>',
+		'<div class = bigtextbox><p class = block-text>In this experiment, you\'re going to see pictures of 6 different faces. Along with each picture, you\'ll see a pair of phrases, and we want you to try to guess which phrase goes with which picture.</p><p class = block-text>For 2 faces, you\'ll guess whether the person in the picture <strong>is popular</strong> or <strong>is wealthy</strong>.</p><p class = block-text>For 2 other faces, you\'ll guess whether the person <strong>is flirty</strong> or <strong>is single</strong>.</p><p class = block-text>For the last 2 faces, you\'ll guess whether the person <strong>likes swimming</strong> or <strong>has siblings</strong>.</p></div>',
 	'<div class = bigtextbox><p class = block-text>To make your guess, press the <strong>left arrow</strong> for the left answer or the <strong>right arrow</strong> for the right answer.</p>,p class = block-text-img><img src="static/experiments/soc_prob_learning/images/splt_ex_1.jpg"></p></div>',
-	'<div class = bigtextbox><p class = block-text>The same word goes with the same picture most of the time, <em>but not always</em>. After each guess you\'ll see the number of points you earned. For example, if you see "5/5 points" below the picture, it means you were correct and earned 5 points. But if you guess incorrectly, you won\'t get any points, so you\'ll just see the number of points you could have gotten. For example, "0/1 point" means you were wrong and got 0 out of 1 possible point.</p><p class = block-text>Try to guess correctly as often as you can to get the most points. You will only have a few seconds to respond and you won\'t get any points if you don\'t respond in time.</p><p class = block-text>Remember, press the <strong>left arrow</strong> for the left answer or the <strong>right arrow</strong> for the right answer.</p><!-- <p class=block-text><strong>Each point is worth a penny</strong>, so you can earn up to about $10</p> --></div>',
+	'<div class = bigtextbox><p class = block-text>The same phrase goes with the same picture most of the time, <em>but not always</em>. After each guess you\'ll see the number of points you earned. For example, if you see "5/5 points" below the picture, it means you were correct and earned 5 points. But if you guess incorrectly, you won\'t get any points, so you\'ll just see the number of points you could have gotten. For example, "0/1 point" means you were wrong and got 0 out of 1 possible point.</p><p class = block-text>Try to guess correctly as often as you can to get the most points. You will only have a few seconds to respond and you won\'t get any points if you don\'t respond in time.</p><p class = block-text>Remember, press the <strong>left arrow</strong> for the left answer or the <strong>right arrow</strong> for the right answer.</p><!-- <p class=block-text><strong>Each point is worth a penny</strong>, so you can earn up to about $10</p> --></div>',
 	'<div class = bigtextbox><p class = block-text>These are the six faces you\'re going to see in the task. Look at them now so they\'re easier to recognize when you play the game:</p><p class = block-text-img><img src="'+ instructionStims[0][2]  +'" /><img src="'+ instructionStims[1][2]  +'" /><img src="'+ instructionStims[2][2]  +'" /><br /><img src="'+ instructionStims[3][2]  +'" /><img src="'+ instructionStims[4][2]  +'" /><img src="'+ instructionStims[5][2]  +'" /></p></div>',
-	'<div class = bigtextbox><p class = block-text>Every once in a while, you\'ll see a question asking if you think you know which face goes with which word. Click on your answer and then press next, and the experiment will continue. </p><p class = block-text-img><img src="static/experiments/soc_prob_learning/images/splt_ex_2.jpg"></p><p class = block-text>Remember, you\'re going to use the <strong>left</strong> and <strong>right</strong> arrow keys when the game starts.</p></div>'],
+	'<div class = bigtextbox><p class = block-text>Every once in a while, you\'ll see a question asking if you think you know which face goes with which phrase. Click on your answer and then press next, and the experiment will continue. </p><p class = block-text-img><img src="static/experiments/soc_prob_learning/images/splt_ex_2.jpg"></p><p class = block-text>Remember, you\'re going to use the <strong>left</strong> and <strong>right</strong> arrow keys when the game starts.</p></div>'],
 	allow_keys: false,
 	show_clickable_nav: true,
 	timing_post_trial: 1000
@@ -470,7 +470,7 @@ var metacog_block = {
 		exp_id: 'soc_prob_learning'
 	},
 	preamble: "Answer the following question, then click 'next.'",
-	pages: [["Do you know which face goes with which word?"]],
+	pages: [["Do you know which face goes with which phrase?"]],
 	options: [[["1. I definitely don't know any", "2.", "3. I might know some", "4.", "5. I definitely know all of them"]]],
 	scale: [[{
 		"1. I definitely don't know any": 1, 
@@ -609,7 +609,7 @@ var pre_end_block = {
 	},
 	timing_response: 180000,
 	text: function() {
-		return '<div class = centerbox><p class = center-block-text>Finished with this task! You earned a total of <strong>' + summarizePoints() + '</strong> points! Remember to tell the researcher how many points you earned.</p><p class = center-block-text>Press <strong>enter</strong> to continue.</p></div>'
+		return '<div class = centerbox><p class = center-block-text>Finished with this task! You earned a total of <strong>' + summarizePoints() + '</strong> points! Please ask the researcher to come back in now, so they can write down how many points you earned.</p><p class = center-block-text>Press <strong>enter</strong> to continue.</p></div>'
 	},
 	cont_key: [13],
 	on_finish: function(data) {
@@ -633,7 +633,7 @@ var pre_end_block_to_qualtrics = {
 	},
 	timing_response: 180000,
 	text: function() {
-        returnText = '<div class = centerbox><p class = center-block-text>Finished with this task! You earned a total of <strong>' + summarizePoints() + '</strong> points! Press <strong>enter</strong> to continue.</p></div>';
+        returnText = '<div class = centerbox><p class = center-block-text>Finished with this task! You earned a total of <strong>' + summarizePoints() + '</strong> points! Ask the researcher to come back in now, so they can write down how many points you earned. Press <strong>enter</strong> to continue.</p></div>';
         return returnText
 	},
 	cont_key: [13],
