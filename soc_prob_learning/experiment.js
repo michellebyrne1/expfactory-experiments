@@ -265,16 +265,16 @@ for(var j = 0; j < stims.length; j++){
 		var prompts = []
 		switch(stims[j][i][1]){
 			case 'status':
-				prompts[0] = 'Is popular';
-				prompts[1] = 'Is wealthy';
+				prompts[0] = 'Is <br /> popular';
+				prompts[1] = 'Is <br /> wealthy';
 				break;
 			case 'mateseek':
-				prompts[0] = 'Is flirty';
-				prompts[1] = 'Is single';
+				prompts[0] = 'Is <br /> flirty';
+				prompts[1] = 'Is <br /> single';
 				break;
 			case 'soc':
-				prompts[0] = 'Likes swimming';
-				prompts[1] = 'Has siblings';
+				prompts[0] = 'Likes <br /> swimming';
+				prompts[1] = 'Has <br /> siblings';
 				break;
 			case 'abstract':
 				prompts[0] = 'Sunny';
